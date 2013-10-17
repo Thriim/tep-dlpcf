@@ -47,13 +47,14 @@ let rec div x = (* diverges *)
 
 \section{Introduction}
 
-Types and types systems are extremely useful and powerful to garanty some
-prooperties on programs, principally that a program ``cannot go wrong''
-(i.e. there shouldn't be types incompatibilities and crash during the
-execution), especially with languages using strong type systems. However, those
-types systems aren't able to catch some properties, like the termination of a
-program and the time needed to be executed, i.e. the computational
-complexity. For exemple, we can consider this simple factorial function:
+Types and types systems are an extremely useful and powerful tools
+that warranty that a program verifies certain properties, mainly that
+it ``cannot go wrong'' (i.e. there shouldn't be types
+incompatibilities and crash during the execution), especially with
+languages using strong type systems. However, most types systems
+aren't capable to catch other properties like termination and the
+execution time, i.e. the computational complexity. For example, we can
+consider this simple factorial function:
 
 \begin{verbatim}
 let rec fact n = if n = 0 then 1 else n * fact (n-1)
@@ -63,18 +64,20 @@ We can easily prove that such a recursive function will terminate if we consider
 only the natural integers, but there is no other way to check it before
 executing the function.
 
-The idea of the linear dependent types is to extend a type system to add the
-ability for the typer to check if there is no diverging, an approximation of the
-computational complexity and even a behavior of the function. Plotkin's PCF,
-which is a lambda -calculus extended with natural integers, will be used as a
-language and types (only Nat and functions on Nat actually), adding the two
-following properties :
+The idea of the linear dependent types is to extend a type system to
+add the ability for the typechecker to, given a program: verify that
+it terminates, give an approximation of its computational complexity and
+specify the semantics of its behavior. Plotkin's PCF, which is a
+lambda calculus extended with natural integers, will be used as a
+language and types (only Nat and functions on Nat actually), adding
+the two following properties :
+
 \begin{itemize}
 \item \textbf{Linearity} : being able to catch the number of evaluation required
   for a term t, this way giving an idea of the computational complexity the
   program.
-\item \textbf{Dependency} : the possibility to distinct copies of a term with
-  distinct types.
+\item \textbf{Dependency} : the possibility to instantiate distinct copies of a term with
+  different types.
 \end{itemize}
 
 Such PCF programs, typed with dlPCF, can then be interpreted by Krivine's
@@ -83,6 +86,16 @@ really efficient, and few languages are actually using this strategy. the idea
 is then to extend the original dlPCF (called $ dlPCF_{N} $) with the ability to type
 programs with a call-by-value strategy, namely $ dlPCF_{v} $, and use the Felleisen and
 Freidman's CEK machine to interpret it.
+
+\section{Introduction to linear and dependent types}
+
+Linear and dependent types are two completely different
+concepts. Linear types come from Girard's linear logic
+\cite{girard1987linear} a really powerful extension of classical logic
+that expresses well resource manipulation. It does so by controlling
+the use of the rules of contraction and weakening two rules that don't
+fit in a system where proposition do not represent unlimited
+resources.
 
 \section{Linear Dependent Types}
 
