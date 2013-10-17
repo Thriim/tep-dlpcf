@@ -1,5 +1,6 @@
 \documentclass[a4paper,12pt]{report}
 
+\usepackage{amssymb}
 \usepackage[utf8]{inputenc}
 \usepackage[francais]{babel}
 \usepackage{verbatim}
@@ -132,10 +133,39 @@ way to represent the number of times a function uses its argument, with the
 following syntax as instance :
 
 \begin{center}
-!$_{n}\sigma$
+$!_{n}\sigma~\multimap~\tau$
 \end{center} 
 
-\section{dlPCF}
+This would mean that $\sigma$ uses its argument $n$ times during evaluation. 
+
+\medskip
+
+Finally, a judgement in dlPCF would look this way, for a function from Nat to
+Nat :
+
+\begin{center}
+$\vdash_{g(a)}~t~:~!_{m}~Nat[a]~\multimap~Nat[f(a)]$ 
+\end{center}
+
+In such a type, the function would use its argument $m$ times, returning morally
+the value of $f$ applied to its argument, at a computational cost of
+$g(a)$. Actually, d$l$PCF is slightly improved by changing the $!_{m}\sigma$ for
+$[a < m] \cdot \sigma$, which makes the type more parametric, could serves as a
+variable bounder and allows multiple variables.
+
+At last, there another parameter that con be considered, which is the $\varepsilon$
+class of functions that can be used to tune the type system and cost of
+evaluation.
+
+Finally, we can type \emph{dbl} in d$l$PCF :
+
+\begin{center}
+$\vdash^{\varepsilon}_{h(a)}~dbl~:~[b~<~a] \cdot Nat[a]~\multimap~Nat[2~\times~a]$
+\end{center}
+
+\section{d$l$PCF}
+
+
 
 \section{Krivine's Abstract Machine and CEK}
 
