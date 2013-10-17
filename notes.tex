@@ -2,7 +2,7 @@
 
 \usepackage{amssymb}
 \usepackage[utf8]{inputenc}
-\usepackage[francais]{babel}
+%% \usepackage[english]{babel}
 \usepackage{verbatim}
 
 \title{Linear Dependant Types in a Call-by-Value Scenario \\
@@ -99,28 +99,50 @@ resources.
 
 \section{Linear Dependent Types}
 
-First of all, let's consider a simple program written in PCF (whose syntax is
-recalled in \ref{pcf-syntax} :
+\begin{figure}
+  \begin{center}
+    $t~::=~n~|~x~|~(\lambda x.t)~|~p(t)~|~s(t)$ \\
+    $|~ifz~$t$~then~$u$~else~$v $|~fix~x.t$
+  \end{center}
+  \caption{Plotkin's PCF's syntax}
+  \label{pcf-syntax}
+\end{figure}
+
+\begin{figure}
+  \begin{center}
+    $(\lambda x.t)~v~\rightarrow~ t[v/x]$ \\
+    $s(n)~\rightarrow~ n~+~1$ \\
+    $p(n+1)~\rightarrow~ n$ \\
+    $p(0)~\rightarrow~ 0$ \\
+    $ifz~0~then~u~else~v~\rightarrow~u$ \\
+    $ifz~n+1~then~u~else~v~\rightarrow~v$ \\
+    $(fix~x.t)~v~\rightarrow~(t[(fix~x.t)/x])~v$
+  \end{center}
+  \caption{The PCF semantics}
+  \label{pcf-sem}
+\end{figure}
+
+First of all, let's consider a simple program written in PCF (whose syntax and
+semantic are recalled in Figures \ref{pcf-syntax} and \ref{pcf-sem} :
 
 \begin{center} 
   dbl = fix~f.$\lambda $x.~ifz~x~then~x~else~s(s(f(p(x)))) 
 \end{center}
 
 Simply, this function will return the double of its argument. In the PCF type
-system, it will be typed as Nat -> Nat. However, there are no other
+system, it will be typed as Nat $\rightarrow$ Nat. However, there are no other
 information about its behavior and its meaning in this type, since, for example,
 a lot of unary functions can be typed the same way (an identity function for
-example, with a little trick to be sure it will be typed with Nat). In
-particular, if we change p(x) by x, this function will have the same type, but
-it will diverge. We may need a type system that will be able to catch those
-diverging behavior, if that's ever possible.
+example). In particular, if we change p(x) by x, this function will have the
+same type, but it will diverge. We may need a type system that will be able to
+catch those diverging behavior, if that's ever possible.
 
 First of all, we can extend the types with informations on values, like for
-\emph{dbl} : $\tau$ = Nat[a] -> Nat[2 x a]. This way, we can see that the type
-contains the exact behavior of the function, however it will be rarely to
-specify such a precise type. it is necessary then to add a \emph{imprecise
-  type}, like for example \textbf{Nat[2, 4]} which is a natural integer whose
-value is between 2 and 4.
+\emph{dbl} : $\tau$ = Nat[a] $\rightarrow$ Nat[2 $\times$ a]. This way, we can
+see that the type contains the exact behavior of the function, however it will
+be rarely possible to specify such a precise type. it is necessary then to add a
+\emph{imprecise type}, like for example \textbf{Nat[2, 4]} which is a natural
+integer whose value is between 2 and 4.
 
 \medskip
 
@@ -160,7 +182,7 @@ Nat :
 $\vdash_{g(a)}~t~:~!_{m}~Nat[a]~\multimap~Nat[f(a)]$ 
 \end{center}
 
-In such a type, the function would use its argument $m$ times, returning morally
+In such a type, the function would use its argument $m$ times, returning 
 the value of $f$ applied to its argument, at a computational cost of
 $g(a)$. Actually, d$l$PCF is slightly improved by changing the $!_{m}\sigma$ for
 $[a < m] \cdot \sigma$, which makes the type more parametric, could serves as a
@@ -170,7 +192,7 @@ At last, there another parameter that con be considered, which is the $\varepsil
 class of functions that can be used to tune the type system and cost of
 evaluation.
 
-Finally, we can type \emph{dbl} in d$l$PCF :
+Finally, we can type \emph{dbl} in d$l$PCF:
 
 \begin{center}
 $\vdash^{\varepsilon}_{h(a)}~dbl~:~[b~<~a] \cdot Nat[a]~\multimap~Nat[2~\times~a]$
@@ -179,8 +201,77 @@ $\vdash^{\varepsilon}_{h(a)}~dbl~:~[b~<~a] \cdot Nat[a]~\multimap~Nat[2~\times~a
 \section{d$l$PCF}
 
 
+Of course, programs that will be considered will be written in PCF, which is an
+extension of the $\lambda$-calculus. 
+
+More formally, the types will be defined as follows:
+
+\begin{center}
+  $\sigma, \tau~::=~Nat[I,J]~|~A~\multimap~\sigma$~~~~~(basic types) \\
+  $A, B~::=~[a~<~I] \cdot \sigma$~~~~~(modal types)
+\end{center}
+
+\subsection{Typing additionnal features}
+
+
+Most of the \emph{features} of the d$l$PCF type system where presented, but
+there exists another one that can introduce the typing rules. Let's consider a
+type $\sigma~=~[a~<~I] \cdot A\{a/x\}$, where, as explained before, is the type
+where $a$ takes successively the values from 0 to I $-$ 1. Now, considering a
+type $\tau~=~[b~<~J] \cdot A\{b+I/x\}$, an interesting proprety here is the fact
+$b$ will take the values from $I$ to $J$, in the same type $A$, for the same value
+$x$ that will be substituted. We can introduce the operator $\uplus$ on the
+modal types, whose result will be:
+
+\begin{center}
+$\sigma~\uplus~\tau~\equiv~\alpha~=~[a~<~J] \cdot A\{a/x\}$
+\end{center}
+
+Formally, the binary operator $\uplus$ has the ability to merge to types giving
+the linear and bounded types property. It is also possible to define an
+operation of bounded sum on modal types. Imagine the following type :
+
+\begin{center}
+  $\tau~=~[b~<~J] \cdot A\{b~+~\sum_{d<a}J\{d/a\}/c\}$
+\end{center}
+
+Its bounded sum will then be : $\sum_{a<I} \tau ~=~ [c~<~\sum_{a<I}J] \cdot A$. 
+
+Finally, the type Nat[I] is, of course, a syntactic sugar for Nat[I,I]
+
+\subsection{Subtyping}
+
+Of course, d$l$PCF, due to its linear and dependent nature, is subject to
+subtyping. The inequality $\sqsubseteq$ can be used on types, with the rules
+described in the Figure \label{subtyping}.
+
+\begin{figure}
+  (Here will be the subtyping rules) \\
+  $\phi , \Phi$
+  \caption{Subtyping rules}
+  \label{subtyping}
+\end{figure}
 
 \section{Krivine's Abstract Machine and CEK}
+
+The d$l$PCF can be interpreted by the KAM machine, but it is not really
+efficient, and the article from [Ugo Dal Lago \& Barbara Petit] presents a
+alternative for the CEK abstract machine.
+
+The CEK machine consists only on a closure and a stack, and few rules to
+interact. A closure is a pair $v =<t;\xi>$, where $t$ is a value and $\xi$
+an environment, in other term a mapping from variables to value closures:
+
+\begin{center}
+  $\xi ~ ::=~\O~|~(x \mapsto v) \cdot \xi$
+\end{center}
+
+Stacks are terms from the following grammar:
+
+\begin{center}
+  $\pi~::=~\diamond~|~fun(v, \pi)~|~arg(c, \pi)$ \\
+  $|~fork(t,u,\xi,\pi)~|~s(\pi)~|~p(\pi)$
+\end{center}
 
 \end{document}
 
