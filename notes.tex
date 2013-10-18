@@ -73,7 +73,7 @@ language and types (only Nat and functions on Nat actually), adding
 the two following properties :
 
 \begin{itemize}
-\item \textbf{Linearity} : being able to catch the number of evaluation required
+\item \textbf{Linearity} : being able to catch the number of evaluations required
   for a term t, this way giving an idea of the computational complexity the
   program.
 \item \textbf{Dependency} : the possibility to instantiate distinct copies of a term with
@@ -93,9 +93,15 @@ Linear and dependent types are two completely different
 concepts. Linear types come from Girard's linear logic
 \cite{girard1987linear} a really powerful extension of classical logic
 that expresses well resource manipulation. It does so by controlling
-the use of the rules of contraction and weakening two rules that don't
-fit in a system where proposition do not represent unlimited
-resources.
+the use of the rules of contraction and weakening, two rules that
+don't fit in a system where propositions do not represent unlimited
+resources. Limiting those rules changes the interpretation of
+propositions where $A \Rightarrow B$ that in classical logic means
+``if A is true then I can be sure that B is'' to linear logic
+propositions similar to $A!_n \Rightarrow B$ that means ``give me n
+elements of A and I can give you a B''.
+
+
 
 \section{Linear Dependent Types}
 
@@ -273,7 +279,12 @@ Stacks are terms from the following grammar:
   $|~fork(t,u,\xi,\pi)~|~s(\pi)~|~p(\pi)$
 \end{center}
 
+\bibliographystyle{plain}
+\bibliography{bibliography}
+
 \end{document}
+
+
 
 % Local Variables:
 % compile-command: "rubber -d notes.tex"
