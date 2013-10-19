@@ -1,6 +1,7 @@
 \documentclass[a4paper,12pt]{report}
 
 \usepackage{amssymb}
+\usepackage{bussproofs}
 \usepackage[utf8]{inputenc}
 %% \usepackage[english]{babel}
 \usepackage{verbatim}
@@ -269,8 +270,33 @@ subtyping. The inequality $\sqsubseteq$ can be used on types, with the rules
 described in the Figure \label{subtyping}.
 
 \begin{figure}
-  (Here will be the subtyping rules) \\
-  $\phi , \Phi$
+  \begin{center}
+    \begin{tabular}{|c c|}
+      \hline
+      & \\
+      \AxiomC{$\phi; \Phi \models~ K \leq I$}
+      \AxiomC{$\phi; \Phi \models~ J \leq H$}
+      \BinaryInfC{$\phi; \Phi \vdash Nat[I, J] \sqsubseteq Nat[K,H]$}
+      \DisplayProof & 
+
+      \AxiomC{$\phi; \Phi \vdash \sigma' \sqsubseteq \sigma$}
+      \AxiomC{$\phi; \Phi \vdash \tau \sqsubseteq \tau'$}
+      \BinaryInfC{
+        $\phi; \Phi \vdash \sigma \multimap \tau \sqsubseteq \sigma'\multimap \tau'$}
+      \DisplayProof \\ 
+      & \\
+      \multicolumn{2}{|c|}{
+        \AxiomC{$(a,\phi); (a > J,\Phi) \vdash A \sqsubseteq B$}
+        \AxiomC{$\phi; \Phi \vdash J \leq I$}
+        \BinaryInfC{
+          $\phi; \Phi \vdash \sigma \multimap [a < I] \cdot A \sqsubseteq [a < J]$
+          $\cdot B $}
+        \DisplayProof 
+      } \\
+      & \\
+      \hline
+    \end{tabular}
+    \end{center}
   \caption{Subtyping rules}
   \label{subtyping}
 \end{figure}
@@ -298,6 +324,55 @@ Stacks are terms from the following grammar:
 
 Finally, a process $P$ is a pair $c~*~\pi$ of a closure and a stack. The process
 evaluation is given in the figure \ref{cek-eval-closure}.
+
+The PCF can be compiled, or evaluated, using the rules defined in the figure \ref{cek-eval-rules}
+
+\begin{figure}
+  \begin{center}
+    \begin{tabular}{|c c c c c c c|}
+      \hline
+      v & $*$ & $arg(c,~\pi)$ & $\succ$ & c & $*$ & $fun(v,~\pi)$ \\
+      v & $*$ & $fun(<~\lambda x.t;\xi~>,~\pi$ & $\succ$ &
+      $<~t;~(x~\mapsto~v)\cdot \xi~>$ 
+      & $*$ & $\pi$ \\
+      v & $*$ & $fun(<fix~x.t;~\xi>,~\pi>$ & $\succ$ &
+      $<t;~(x\mapsto <fix~x.t;~\xi>) \cdot \xi>$ & $*$ & $arg(v,~\pi)$ \\
+      $<0;~\xi'>$ & $*$ & $fork(t,~u,~\xi,~\pi)$ & $\succ$ &
+      $<t;~\xi>$ & $*$ & $\pi$ \\
+      $<n+1;~\xi'>$ & $*$ & $fork(t,~u,~\xi,~\pi)$ & $\succ$ &
+      $<u;~\xi>$ & $*$ & $\pi$ \\
+      $<n;~\xi>$ & $*$ & $s(\pi)$ & $\succ$ &
+      $<n+1;~\O>$ & $*$ & $\pi$ \\
+      $<n;~\xi>$ & $*$ & $p(\pi)$ & $\succ$ &
+      $<n-1;~\O>$ & $*$ & $\pi$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{The CEK$_{PCF}$ closure evaluation rules}
+  \label{cek-eval-closure}
+\end{figure}
+
+
+\begin{figure}
+  \begin{center}
+    \begin{tabular}{|c c c c c c c|}
+      \hline
+      $<x;~\xi$ & $*$ & $\pi$ & $\succ$ & $\xi(\pi)$ & $*$ & $\pi$ \\
+      $<tu;~\xi$ & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
+      $arg(<u;~\xi>,~\pi)$ \\
+      $<s(t);~\xi$ & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
+      $s(\pi)$ \\
+      $<p(t);~\xi$ & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
+      $p(\pi)$ \\
+      $ifz~t~then~u~else~s;~\xi$ 
+      & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
+      $fork(t,~u,~\xi,~\pi)$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \caption{The CEK$_{PCF}$ evaluation rules}
+  \label{cek-eval-rules}
+\end{figure}
 
 
 \bibliographystyle{plain}
