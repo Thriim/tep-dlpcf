@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{report}
+\documentclass[a4paper,12pt]{article}
 
 \usepackage{amssymb}
 \usepackage{bussproofs}
@@ -6,45 +6,49 @@
 %% \usepackage[english]{babel}
 \usepackage{verbatim}
 
-\title{Linear Dependant Types in a Call-by-Value Scenario \\
+\title{Linear Dependent Types in a Call-by-Value Scenario \\
 - \\
-Personal notes}
+Synthesis}
 
-\author{Pierrick COUDERC}
+\author{I\~{n}igo Mediavilla \and Pierrick COUDERC}
 
 \begin{document}
 
 \maketitle
 
-\chapter{Notes}
+%% \chapter{Notes}
 
-\section{Introduction}
+%% \section{Introduction}
 
-\section{Linear Dependent Types, Intuitively}
+%% \section{Linear Dependent Types, Intuitively}
 
-Lambda-calculus in PCF Type System: 
-\begin{itemize}
-\item fix: fixpoint operator, for recursive functions
-\item ifz: if zero
-\item s: succ
-\item p: pred
-\end{itemize}
+%% Lambda-calculus in PCF Type System: 
+%% \begin{itemize}
+%% \item fix: fixpoint operator, for recursive functions
+%% \item ifz: if zero
+%% \item s: succ
+%% \item p: pred
+%% \end{itemize}
 
-Functions presented:
-\begin{verbatim}
-let rec dbl x =
-  if x = 0 then x
-  else succ @@ succ @@ dbl @@ pred x
+%% Functions presented:
+%% \begin{verbatim}
+%% let rec dbl x =
+%%   if x = 0 then x
+%%   else succ @@ succ @@ dbl @@ pred x
 
-let rec div x = (* diverges *)
-  if x = 0 then x
-  else succ @@ succ @@ div x
-\end{verbatim}
+%% let rec div x = (* diverges *)
+%%   if x = 0 then x
+%%   else succ @@ succ @@ div x
+%% \end{verbatim}
 
 
-\chapter{Article}
+%% \chapter{Article}
 
-\paragraph{Abstract}
+\paragraph{Abstract} 
+The linear dependent types are powerful tools to prove the termination of
+programs and evaluate its computational cost. The d$l$PCF type system is an
+application of those ideas on Plotkin's PCF, giving a complete langage that can
+easily interpreted in a CEK-like abstract machine.
 
 \section{Introduction}
 
@@ -65,13 +69,12 @@ We can easily prove that such a recursive function will terminate if we consider
 only the natural integers, but there is no other way to check it before
 executing the function.
 
-The idea of the linear dependent types is to extend a type system to
-add the ability for the typechecker to, given a program: verify that
-it terminates, give an approximation of its computational complexity and
-specify the semantics of its behavior. Plotkin's PCF, which is a
-lambda calculus extended with natural integers, will be used as a
-language and types (only Nat and functions on Nat actually), adding
-the two following properties :
+The idea of the linear dependent types \cite{ldtrc} is to extend a type system
+to add the ability for the typechecker to, given a program: verify that it
+terminates, give an approximation of its computational complexity and specify
+the semantics of its behavior. Plotkin's PCF, which is a lambda calculus
+extended with natural integers, will be used as a language and types (only Nat
+and functions on Nat actually), adding the two following properties :
 
 \begin{itemize}
 \item \textbf{Linearity} : being able to catch the number of evaluations required
@@ -81,12 +84,12 @@ the two following properties :
   different types.
 \end{itemize}
 
-Such PCF programs, typed with dlPCF, can then be interpreted by Krivine's
+Such PCF programs, typed with d$l$PCF, can then be interpreted by Krivine's
 Abstract Machine for a Call-by-Name evaluation strategy, but this setting is not
 really efficient, and few languages are actually using this strategy. the idea
-is then to extend the original dlPCF (called $ dlPCF_{N} $) with the ability to type
-programs with a call-by-value strategy, namely $ dlPCF_{v} $, and use the Felleisen and
-Freidman's CEK machine to interpret it.
+is then to extend the original dlPCF (called d$l$PCF$_{N} $) with the ability to
+type programs with a call-by-value strategy \cite{ldtcbv}, namely d$l$PCF$_{v} $,
+  and use the Felleisen and Freidman's CEK machine to interpret it.
 
 \section{Introduction to linear and dependent types}
 
@@ -302,6 +305,31 @@ described in the Figure \label{subtyping}.
     \end{center}
   \caption{Subtyping rules}
   \label{subtyping}
+\end{figure}
+
+\subsection{Typing judgements}
+
+We can now introduce the following form for typing judgements:
+
+\begin{center}
+  $\phi; \Phi; \Gamma \vdash_{K}^{\varepsilon} t~:~\tau$
+\end{center}
+
+The argument $K$ is the weight of $t$, in other word the maximal number of
+substitution during its evaluation. $\Phi$ are the constraints envrionnement,
+for exemple $(a~<~I)$ from $[a~<~I] \cdot Nat$, called the index context, and
+$\Gamma$ is the typing context, associating a type to each free variable of $t$.
+Finally, $\phi$ is a bounder for free variables contained in the other context
+arguments.The sums and bounded sums can be applied over contexts. The derivation
+rules are presented in the figure \ref{deriv-rules}.
+
+\begin{figure}
+
+\begin{tabular}{|c c|}
+
+\end{tabular}
+\caption{Typing rules of d$l$PCF}
+\label{deriv-rules}.
 \end{figure}
 
 \section{Krivine's Abstract Machine and CEK}
