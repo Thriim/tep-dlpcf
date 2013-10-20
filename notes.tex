@@ -163,10 +163,13 @@ catch those diverging behavior, if that's ever possible.
 
 First of all, we can extend the types with informations on values, like for
 \emph{dbl} : $\tau$ = Nat[a] $\rightarrow$ Nat[2 $\times$ a]. This way, we can
-see that the type contains the exact behavior of the function, however it will
-be rarely possible to specify such a precise type. it is necessary then to add a
-\emph{imprecise type}, like for example \textbf{Nat[2, 4]} which is a natural
-integer whose value is between 2 and 4.
+see that the type contains the exact behavior of the function. However
+some functions, for example those who are called recursively like \textbf{dbl},
+will receive an initial parameter that will be altered an passed to
+the nested recursive calls. The type \textbf{Nat[2,4]} is an example
+of the notation that is used to express this fact, with 2 being the
+lower bound of the input parameter and 4 being the greater
+bound. Applied to our function \textbf{dbl} the type of its input
 
 \medskip
 
@@ -174,7 +177,7 @@ Secondly, a linear dependent type system has an interesting proprety, which
 captures the termination behaviour for functions that are fully recursive. An
 good example was the one we provided before, but in a classic type system, their
 behaviour cannot be differentiated. However, one terminates, while the other
-diverges. This is a property that sized types and dependent types satisfies. To
+diverges. This is a property that sized types and dependent types satisfy. To
 do so, the type system, by trying to prove termination, could also gives the
 time and space consumption. Using the ideas from linear logic, we could, for
 example give type the following way :
