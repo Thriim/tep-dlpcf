@@ -1,0 +1,56 @@
+
+Problems
+- In classical type systems types don't reflect termination
+
+  add: fix f y z => ifz y then 0 else (succ (f (pred y) z)
+
+  and
+
+  divergef : fix f y z => ifz y then 0 else (succ (f y z))
+
+  Both have type Nat -> Nat but one diverges and the other doesn't
+
+- Classical type systems don't provide information about a function's
+  complexity
+
+  which one is best?:
+
+  identity : x => x
+
+  madIdentity: fix f x => ifz x then 0 else (succ (f (pred x))
+
+Two improvements over classical type systems
+
+- Dependent types
+
+The type carries more meaningful information about the transformations
+perform inside a function.
+
+e.g
+
+sized arrays => ArrayList<Integer, Size>  
+
+- Linear types
+
+Come from linear logic, allow to  define variables that cannot be shared
+(e.g iterator) or that can be shared only "n" times.
+
+e. g
+
+Types define the number of times a variable is "used"
+
+Putting them together
+
+- Dependent types provide information about the function inputs and outputs
+
+- Linear types provide information about how many times a parameter is
+  copied or a function is used (substitution)
+
+- Taking the information from both + giving an extra context (Epsilon) allows to
+infer a function's complexity and thus termination
+
+
+A simple example
+
+
+
