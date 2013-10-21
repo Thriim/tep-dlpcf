@@ -159,32 +159,31 @@ semantic are recalled in Figures \ref{pcf-syntax} and \ref{pcf-sem} :
 \end{center}
 
 Simply, this function will return the double of its argument. In the PCF type
-system, it will be typed as Nat $\rightarrow$ Nat. However, there are no other
+system, it will be typed as Nat $\rightarrow$ Nat. However, there is no other
 information about its behavior and its meaning in this type, since, for example,
 a lot of unary functions can be typed the same way (an identity function for
 example). In particular, if we change p(x) by x, this function will have the
 same type, but it will diverge. We may need a type system that will be able to
-catch those diverging behavior, if that's ever possible.
+catch that diverging behavior, if that's ever possible.
 
-First of all, we can extend the types with informations on values, like for
-\emph{dbl} : $\tau$ = Nat[a] $\rightarrow$ Nat[2 $\times$ a]. This way, we can
-see that the type contains the exact behavior of the function. However
-some functions, for example those who are called recursively like \textbf{dbl},
-will receive an initial parameter that will be altered an passed to
-the nested recursive calls. The type \textbf{Nat[2,4]} is an example
-of the notation that is used to express this fact, with 2 being the
-lower bound of the input parameter and 4 being the greater
-bound. Applied to our function \textbf{dbl} the type of its input
+First of all, we can extend the types with informations on values,
+like for \emph{dbl} : $\tau$ = Nat[a] $\rightarrow$ Nat[2 $\times$
+a]. This way, we can see that the type contains the exact behavior of
+the function. However some functions, for example those who are called
+recursively like \emph{dbl}, will receive an initial parameter that
+will be altered an passed to the nested recursive calls. The type
+\emph{Nat[2,4]} is an example of the notation that is used to
+express that a function is called with values within a range, with 2
+being the lower bound of the range and 4 being the greater
+bound.
 
 \medskip
 
-Secondly, a linear dependent type system has an interesting proprety, which
-captures the termination behaviour for functions that are fully recursive. An
-good example was the one we provided before, but in a classic type system, their
-behaviour cannot be differentiated. However, one terminates, while the other
-diverges. This is a property that sized types and dependent types satisfy. To
-do so, the type system, by trying to prove termination, could also gives the
-time and space consumption. Using the ideas from linear logic, we could, for
+Secondly, a linear dependent type system has the interesting property of
+being able to infer the complexity of a given function even it is
+recursive. By infering the complexity of a function the linear
+dependent type system is also capable of identifying the functions that
+diverge. Using the ideas from linear logic, we could, for
 example give type the following way :
 
 \begin{center}
@@ -192,18 +191,22 @@ $\vdash_{I}$ dbl : Nat $\rightarrow$ Nat
 \end{center}
 
 In this type, I is the cost to compute dbl, and, since it can be given, returns
-the fact that the function doesn't diverge.
+the fact that the function doesn't diverge. For the dbl function where
+we replace the pred x by x the type system would realize that the function
+doesn't terminate and will show a compilation error.
 
-The idea behind dlPCF merges the imprecise types and the computational costs,
-combined with ideas from the bounded linear logic. This one allows a practical
-way to represent the number of times a function uses its argument, with the
-following syntax as instance :
+The idea behind dlPCF merges the imprecise types and the computational
+costs, combined with ideas from the bounded linear logic
+\cite{boundedlinearlogic}. This one allows a practical way to
+represent the number of times a function uses its argument or it's
+substituted, depending on wether we talk about $ dlPCF_{N} $ or $
+dlPCF_{V} $. As an example the following formula in $ dlPCF_{V} $:
 
 \begin{center}
 $!_{n}\sigma~\multimap~\tau$
 \end{center} 
 
-This would mean that $\sigma$ uses its argument $n$ times during evaluation. 
+Means that $\sigma$ is substituted $n$ times during evaluation. 
 
 \medskip
 
@@ -217,10 +220,10 @@ $\vdash_{g(a)}~t~:~!_{m}~Nat[a]~\multimap~Nat[f(a)]$
 In such a type, the function would use its argument $m$ times, returning 
 the value of $f$ applied to its argument, at a computational cost of
 $g(a)$. Actually, d$l$PCF is slightly improved by changing the $!_{m}\sigma$ for
-$[a < m] \cdot \sigma$, which makes the type more parametric, could serves as a
+$[a < m] \cdot \sigma$, which makes the type more parametric, could serve as a
 variable bounder and allows multiple variables.
 
-At last, there another parameter that con be considered, which is the $\varepsilon$
+At last, there is another parameter that con be considered, which is the $\varepsilon$
 class of functions that can be used to tune the type system and cost of
 evaluation.
 
@@ -259,7 +262,7 @@ modal types, whose result will be:
 $\sigma~\uplus~\tau~\equiv~\alpha~=~[a~<~J] \cdot A\{a/x\}$
 \end{center}
 
-Formally, the binary operator $\uplus$ has the ability to merge to types giving
+Formally, the binary operator $\uplus$ has the ability to merge two types giving
 the linear and bounded types property. It is also possible to define an
 operation of bounded sum on modal types. Imagine the following type :
 
@@ -382,6 +385,80 @@ rules are presented in the figure \ref{deriv-rules}.
   \label{deriv-rules}.
 \end{figure}
 
+\section{An example of $ dlPCF\_{v} $}
+
+The best way to understand all the concepts behind $ dlPCF_{V} $ is to
+explain them with an example. Let's take the add function defined by:
+
+\begin{center}
+$fix\;f.\lambda yz.\;ifz\;y\;then\;0\;else\;s(f\;p(y)\;z)$
+\end{center}
+
+Its dependent type is the following:
+
+\begin{center}
+$(Nat[f]\; =>\;(Nat[g]\; =>\;Nat[f + g]))$
+\end{center}
+
+Adding the annotations for linear dependent types in $ dlPCF_{V} $:
+
+\begin{center}
+$\vdash^{\varepsilon}_{K}~add~:~[a~<~1]~\cdot~Nat[f]~\multimap~~[c~<~1]~\cdot~(Nat[g]~\multimap~Nat[f + g])$
+\end{center}
+
+As explained previously, annotations like $[x~<~n]$ before a function
+indicate the number of times the function is copied in a term. Thus
+$[a~<~1]$ and $[c~<~1]$ represent that both the partial function with
+the fixpoint f and one argument and the fixpoint f with its two
+arguments applied is only copied once in the term.
+
+However what is more interesting about the add function is to try to
+understand the process to calculate the cost of the function, also
+called its weight, that is represented in the previous formula by the
+term K. 
+
+Calculating the cost for the term t that is defined inside the
+recursive function f (i.e $t\;=\lambda
+yz.\;ifz\;y\;then\;0\;else\;s(f\;p(y)\;z)$) from an informal point of
+view is straightforward. It reduces to counting how many times the
+bounded variables y and z will be used every time the term t is
+reduced. Since both y and z will be copied only once the weight of the
+term t is 2.
+
+The more interesting part in the process of calculating the weight of
+add is replacing the parameter f by a recursive function that is
+invoked as long as the first parameter it receives is bigger than
+zero. The rule that defines typing for recursion is the following:
+
+\begin{center}
+%% TODO: Add the typing function for recursion
+\end{center}
+
+By intuition the cost of a term with a recursive call is the sum of
+the cost of all times the term is called recursively. The equational
+context $\epsilon$ allows us to calculate that cost. The context is
+parameterized on b, the level of the recursion the execution is in. In 
+$\epsilon$ for the function add we define the following terms:
+
+
+\begin{itemize}
+\item \textbf{K} : represent the number of recursive calls. 
+\item \textbf{I} : is the number of times the recursive function will be called at
+the level b. 
+\item \textbf{H} : is calculated according to the formula explained in .... . It
+represents the level of nesting.
+\item \textbf{J} : is the number of copies of f. the first is not considered and
+the last recursive call doesn't use it.
+\end{itemize}
+
+With the elements given by $\epsilon$, calculating the cost of add
+reduces to solving the $H + \sum\limits_{b<H} (2) $, where 2
+represents the cost of the term t previously explained.
+
+%% TODO: Add the section that explains how to calculate <>0 to n
+%% TODO: Finish this section
+
+
 \section{Krivine's Abstract Machine and CEK}
 
 The d$l$PCF can be interpreted by the KAM machine, but it is not really
@@ -408,7 +485,7 @@ evaluation is given in the figure \ref{cek-eval-closure}.
 
 The PCF can be compiled, or evaluated, using the rules defined in the figure \ref{cek-eval-rules}
 
-\begin{figure}
+\begin{figure}[ht]
   \begin{center}
     \begin{tabular}{|c c c c c c c|}
       \hline
