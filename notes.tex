@@ -244,6 +244,34 @@ More formally, the types will be defined as follows:
   $A, B~::=~[a~<~I] \cdot \sigma$~~~~~(modal types)
 \end{center}
 
+\subsection{Index terms and equational programs}
+
+d$l$PCF is parameterized by a $\epsilon$. $\epsilon$ is called an equational
+program and corresponds to a set of equations that define the values of index 
+terms. Index terms are resolved to natural numbers but they are build according to 
+the following grammar:
+
+\begin{center}
+$I,J,K::= a | f(I_{1},...,I_{\alpha(f)} | \sum_{a<I} J | otriangle $
+\end{center}
+
+Where the first two constructions allow to define basic index variables and first order
+functions that return index values (natural numbers). The third element corresponds to
+a \emph{bounded sum}, mathematically a bounded sum is just the sum of all posible values of J 
+where a is replaced by the values from 0 to $I-1$. Later, when explaining an example 
+of the typing of a linear dependent type we'll see that bounded sums allow for example to 
+aggregate all the substitutions that are made as part of all the recursive calls derived
+from a function application. The last element is called \emph{forest cardinality}. The forest
+cardinality is calculated by the method defined in the section 3.1 of \cite{ldtcv}, we won't
+get into the details of how to calculate it but we're interested by its application to 
+linear dependent types. Basically for a given number of trees that describe the calls, including
+the recursive calls involved in the evaluation of a term, the forest cardinality allows to
+define the number of recursive calls that are a left when the evaluation is inside a given
+level provided by a parameter. The parameters I and J represent respectively the level of the 
+evaluation and the number of subtrees starting by the level I that will be evaluated. The 
+utility of this concept will be demonstrated when explaining how to calculate the cost of
+a recursive function like add in the example studied.
+
 \subsection{Typing additionnal features}
 
 
