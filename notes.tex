@@ -246,6 +246,34 @@ More formally, the types will be defined as follows:
   $A, B~::=~[a~<~I] \cdot \sigma$~~~~~(modal types)
 \end{center}
 
+\subsection{Index terms and equational programs}
+
+d$l$PCF is parameterized by a $\epsilon$. $\epsilon$ is called an equational
+program and corresponds to a set of equations that define the values of index 
+terms. Index terms are resolved to natural numbers but they are build according to 
+the following grammar:
+
+\begin{center}
+$I,J,K::= a | f(I_{1},...,I_{\alpha(f)} | \sum_{a<I} J | otriangle $
+\end{center}
+
+Where the first two constructions allow to define basic index variables and first order
+functions that return index values (natural numbers). The third element corresponds to
+a \emph{bounded sum}, mathematically a bounded sum is just the sum of all posible values of J 
+where a is replaced by the values from 0 to $I-1$. Later, when explaining an example 
+of the typing of a linear dependent type we'll see that bounded sums allow for example to 
+aggregate all the substitutions that are made as part of all the recursive calls derived
+from a function application. The last element is called \emph{forest cardinality}. The forest
+cardinality is calculated by the method defined in the section 3.1 of \cite{ldtcv}, we won't
+get into the details of how to calculate it but we're interested by its application to 
+linear dependent types. Basically for a given number of trees that describe the calls, including
+the recursive calls involved in the evaluation of a term, the forest cardinality allows to
+define the number of recursive calls that are a left when the evaluation is inside a given
+level provided by a parameter. The parameters I and J represent respectively the level of the 
+evaluation and the number of subtrees starting by the level I that will be evaluated. The 
+utility of this concept will be demonstrated when explaining how to calculate the cost of
+a recursive function like add in the example studied.
+
 \subsection{Typing additionnal features}
 
 
@@ -452,7 +480,7 @@ As explained previously, annotations like $[x~<~n]$ before a function
 indicate the number of times the function is copied in a term. Thus
 $[a~<~1]$ and $[c~<~1]$ represent that both the partial function with
 the fixpoint f and one argument and the fixpoint f with its two
-arguments applied is only copied once in the term.
+arguments applied are copied only once in the term.
 
 However what is more interesting about the add function is to try to
 understand the process to calculate the cost of the function, also
@@ -483,8 +511,8 @@ parameterized on b, the level of the recursion the execution is in. In
 $\epsilon$ for the function add we define the following terms:
 
 
-\begin{itemize}
-\item \textbf{K} : represent the number of recursive calls. 
+\begin{itemize}[ht]
+\item \textbf{K} : represent the number of recursive calls.
 \item \textbf{I} : is the number of times the recursive function will be called at
 the level b. 
 \item \textbf{H} : is calculated according to the formula explained in .... . It
@@ -492,6 +520,48 @@ represents the level of nesting.
 \item \textbf{J} : is the number of copies of f. the first is not considered and
 the last recursive call doesn't use it.
 \end{itemize}
+
+Figure~\ref{definitionindexterms} represents the definitions of the index
+terms for the add function.
+
+\begin{figure}[ht]
+\label{definitionindexterms}
+\caption{Equational context for add function}
+\begin{center}
+ $I~=~if~b~<~f~then~1~else~0$
+
+ $J~=~f~-~b~-~1$
+
+ $H~=~f~-~b$
+
+ $K~=~f~-~b~+~1$
+\end{center}
+\end{figure}
+
+The meaning of all the index terms defined previously can be better
+understood by tracing the execution of a call to add. An example is
+given at figure \ref{exectrace}. 
+
+
+\begin{figure}
+\label{exectrace}
+\caption{Execution trace of add 3 4}
+\begin{center}
+\begin{verbatim}
+add 3 4 = fix f succ (f pred 3 4)
+    add 2 4 = fix f succ (f pred 2 4)
+        add 1 4 = fix f succ (f pred 1 4)
+            add 0 4 = fix f 0 
+\end{verbatim}
+\end{center}
+\end{figure}
+
+With the given formulas and the execution trace we can see how I will always be 1 unless
+$b~>=~f$, that is I will be 0 when the first parameter to add is zero
+meaning that there will not be more recursive calls when the first
+parameter has been fully decomposed. I represents the number of
+substitutions of the fixpoint function f
+
 
 With the elements given by $\epsilon$, calculating the cost of add
 reduces to solving the $H + \sum\limits_{b<H} (2) $, where 2
