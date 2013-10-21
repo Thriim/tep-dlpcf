@@ -376,6 +376,48 @@ rules are presented in the figure \ref{deriv-rules}.
       } \\ 
       
       & \\
+      
+      \multicolumn{2}{|c|}{
+        \AxiomC{$\phi; (J \leq 0, \Phi); \Delta \vdash_{N}^{\varepsilon}$
+          $ u : \tau$}
+        \noLine
+        \UnaryInfC{$\phi; (K \geq 1, \Phi); \Delta \vdash_{N}^{\varepsilon}$
+          $ s : \tau$}
+        \AxiomC{$\phi; \Phi; \Gamma \vdash_{N}^{\varepsilon} t : Nat[J,K]$}
+        \noLine
+        \UnaryInfC{$\phi; \Phi; \Gamma \vdash_{\varepsilon}$
+          $ \Sigma \sqsupseteq \Gamma \uplus \Delta $}
+        \RightLabel{(if)}
+        \BinaryInfC{
+          $\phi; \Phi; \Gamma \vdash_{M+N}^{\varepsilon}$
+          $s(t) : Nat[K,H]$}
+        \DisplayProof 
+      } \\ 
+
+      & \\
+      
+      %% Application
+      \multicolumn{2}{|c|}{
+        \AxiomC{$\phi; \Phi; \Gamma \vdash_{K}^{\varepsilon}$
+          $ t : [a < J] \cdot \sigma \multimap \tau$}
+        \noLine
+        \UnaryInfC{$\phi; \Phi; \Delta \vdash_{H}^{\varepsilon}$
+          $ u : \sigma \{0/a\}$}
+        \noLine
+        \UnaryInfC{$\phi; \Phi; \Delta \models_{\varepsilon}$
+          $ J \leq 1 $}
+        \AxiomC{$\phi; \Phi \vdash_{\varepsilon} \tau \{0/a\} \sqsubseteq \mu$}
+        \noLine
+        \UnaryInfC{$\phi; \Phi \vdash_{\varepsilon}$
+          $ \Sigma \sqsupseteq \Gamma \uplus \Delta $}
+        \RightLabel{(App)}
+        \BinaryInfC{
+          $\phi; \Phi; \Sigma \vdash_{K+H}^{\varepsilon}$
+          $tu : \mu$}
+        \DisplayProof 
+      } \\ 
+     
+     &\\
 
       \hline
       
