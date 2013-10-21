@@ -137,13 +137,15 @@ systems.
 
 \begin{figure}
   \begin{center}
-    $(\lambda x.t)~v~\rightarrow~ t[v/x]$ \\
-    $s(n)~\rightarrow~ n~+~1$ \\
-    $p(n+1)~\rightarrow~ n$ \\
-    $p(0)~\rightarrow~ 0$ \\
-    $ifz~0~then~u~else~v~\rightarrow~u$ \\
-    $ifz~n+1~then~u~else~v~\rightarrow~v$ \\
-    $(fix~x.t)~v~\rightarrow~(t[(fix~x.t)/x])~v$
+    \begin{tabular}{r c l}
+      $(\lambda x.t)~v$ & $\rightarrow$ & $t[v/x]$ \\
+      $s(n)$ & $\rightarrow$ & $ n~+~1$ \\
+      $p(n+1)$ & $\rightarrow$ & $ n$ \\
+      $p(0)$ & $\rightarrow$ & $0$ \\
+      $ifz~0~then~u~else~v$ & $\rightarrow$ & $u$ \\
+      $ifz~n+1~then~u~else~v$ & $\rightarrow$ & $v$ \\
+      $(fix~x.t)~v$ & $\rightarrow$ & $(t[(fix~x.t)/x])~v$
+    \end{tabular}
   \end{center}
   \caption{The PCF semantics}
   \label{pcf-sem}
@@ -355,12 +357,60 @@ arguments.The sums and bounded sums can be applied over contexts. The derivation
 rules are presented in the figure \ref{deriv-rules}.
 
 \begin{figure}
+  \begin{center}
+    \begin{tabular}{|c c|}
+      \hline 
+      & \\
 
-\begin{tabular}{|c c|}
+      \AxiomC{$\phi; \Phi \vdash_{\varepsilon} \sigma \sqsubseteq \tau$}
+      \RightLabel{(Ax)}
+      \UnaryInfC{
+        $\phi; \Phi; \Gamma, x \vdash_{I}^{\varepsilon} x : \tau$}
+      \DisplayProof &
 
-\end{tabular}
-\caption{Typing rules of d$l$PCF}
-\label{deriv-rules}.
+      \AxiomC{$(a, \phi); (a < I, \Phi); \Gamma, x$ 
+        $\vdash_{K}^{\varepsilon} t : \tau$}
+      \AxiomC{$\phi; \Phi \vdash_{\varepsilon} \Delta $
+        $\sqsubseteq \sum_{a<I} \Gamma$}
+      \RightLabel{$(\multimap)$}
+      \BinaryInfC{
+        $\phi; \Phi; \Gamma, x \vdash_{I}^{\varepsilon} x : \tau$}     
+      \DisplayProof \\
+
+      & \\
+
+      \multicolumn{2}{|c|}{
+        \AxiomC{$\phi; \Phi \models_{\varepsilon} K \leq I + 1$}
+        \AxiomC{$\phi; \Phi \models_{\varepsilon} J + 1 \leq H$}
+        \AxiomC{$\phi; \Phi; \Gamma \vdash_{M}^{\varepsilon}$
+          $ t : Nat[I, J] $}
+        \RightLabel{(s)}
+        \TrinaryInfC{
+          $\phi; \Phi; \Gamma \vdash_{M}^{\varepsilon}$
+          $s(t) : Nat[K,H]$}
+        \DisplayProof 
+      } \\ 
+      
+      & \\
+      
+      \multicolumn{2}{|c|}{
+        \AxiomC{$\phi; \Phi \models_{\varepsilon} I \leq n $}
+        \AxiomC{$\phi; \Phi \models_{\varepsilon} n \leq J$}
+        \RightLabel{(n)}
+        \BinaryInfC{
+          $\phi; \Phi; \Gamma \vdash_{0}^{\varepsilon}$
+          $n : Nat[K,H]$}
+        \DisplayProof 
+      } \\ 
+      
+      & \\
+
+      \hline
+      
+    \end{tabular}
+  \end{center}
+  \caption{Some typing rules of d$l$PCF$_{V}$}
+  \label{deriv-rules}.
 \end{figure}
 
 \section{An example of $ dlPCF\_{v} $}
@@ -493,12 +543,12 @@ The PCF can be compiled, or evaluated, using the rules defined in the figure \re
   \begin{center}
     \begin{tabular}{|c c c c c c c|}
       \hline
-      $<x;~\xi$ & $*$ & $\pi$ & $\succ$ & $\xi(\pi)$ & $*$ & $\pi$ \\
-      $<tu;~\xi$ & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
+      $<x;~\xi>$ & $*$ & $\pi$ & $\succ$ & $\xi(\pi)$ & $*$ & $\pi$ \\
+      $<tu;~\xi>$ & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
       $arg(<u;~\xi>,~\pi)$ \\
-      $<s(t);~\xi$ & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
+      $<s(t);~\xi>$ & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
       $s(\pi)$ \\
-      $<p(t);~\xi$ & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
+      $<p(t);~\xi>$ & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
       $p(\pi)$ \\
       $ifz~t~then~u~else~s;~\xi$ 
       & $*$ & $\pi$ & $\succ$ & $<t;~\xi>$ & $*$ & 
