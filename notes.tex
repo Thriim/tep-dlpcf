@@ -438,7 +438,7 @@ As explained previously, annotations like $[x~<~n]$ before a function
 indicate the number of times the function is copied in a term. Thus
 $[a~<~1]$ and $[c~<~1]$ represent that both the partial function with
 the fixpoint f and one argument and the fixpoint f with its two
-arguments applied is only copied once in the term.
+arguments applied are copied only once in the term.
 
 However what is more interesting about the add function is to try to
 understand the process to calculate the cost of the function, also
@@ -469,8 +469,8 @@ parameterized on b, the level of the recursion the execution is in. In
 $\epsilon$ for the function add we define the following terms:
 
 
-\begin{itemize}
-\item \textbf{K} : represent the number of recursive calls. 
+\begin{itemize}[ht]
+\item \textbf{K} : represent the number of recursive calls.
 \item \textbf{I} : is the number of times the recursive function will be called at
 the level b. 
 \item \textbf{H} : is calculated according to the formula explained in .... . It
@@ -478,6 +478,48 @@ represents the level of nesting.
 \item \textbf{J} : is the number of copies of f. the first is not considered and
 the last recursive call doesn't use it.
 \end{itemize}
+
+Figure~\ref{definitionindexterms} represents the definitions of the index
+terms for the add function.
+
+\begin{figure}[ht]
+\label{definitionindexterms}
+\caption{Equational context for add function}
+\begin{center}
+ $I~=~if~b~<~f~then~1~else~0$
+
+ $J~=~f~-~b~-~1$
+
+ $H~=~f~-~b$
+
+ $K~=~f~-~b~+~1$
+\end{center}
+\end{figure}
+
+The meaning of all the index terms defined previously can be better
+understood by tracing the execution of a call to add. An example is
+given at figure \ref{exectrace}. 
+
+
+\begin{figure}
+\label{exectrace}
+\caption{Execution trace of add 3 4}
+\begin{center}
+\begin{verbatim}
+add 3 4 = fix f succ (f pred 3 4)
+    add 2 4 = fix f succ (f pred 2 4)
+        add 1 4 = fix f succ (f pred 1 4)
+            add 0 4 = fix f 0 
+\end{verbatim}
+\end{center}
+\end{figure}
+
+With the given formulas and the execution trace we can see how I will always be 1 unless
+$b~>=~f$, that is I will be 0 when the first parameter to add is zero
+meaning that there will not be more recursive calls when the first
+parameter has been fully decomposed. I represents the number of
+substitutions of the fixpoint function f
+
 
 With the elements given by $\epsilon$, calculating the cost of add
 reduces to solving the $H + \sum\limits_{b<H} (2) $, where 2
