@@ -5,6 +5,7 @@
 \usepackage[utf8]{inputenc}
 %% \usepackage[english]{babel}
 \usepackage{verbatim}
+\usepackage{mathabx}
 
 \title{Linear Dependent Types in a Call-by-Value Scenario \\
 - \\
@@ -248,13 +249,13 @@ More formally, the types will be defined as follows:
 
 \subsection{Index terms and equational programs}
 
-d$l$PCF is parameterized by a $\epsilon$. $\epsilon$ is called an equational
+d$l$PCF is parameterized by a $\varepsilon$. $\varepsilon$ is called an equational
 program and corresponds to a set of equations that define the values of index 
 terms. Index terms are resolved to natural numbers but they are build according to 
 the following grammar:
 
 \begin{center}
-$I,J,K::= a | f(I_{1},...,I_{\alpha(f)} | \sum_{a<I} J | otriangle $
+$I,J,K::= a | f(I_{1},...,I_{\alpha(f)} | \sum_{a<I} J |\;\otriangleup_{a}^{I,J}K $
 \end{center}
 
 Where the first two constructions allow to define basic index variables and first order
@@ -357,7 +358,7 @@ arguments.The sums and bounded sums can be applied over contexts. The derivation
 rules are presented in the figure \ref{deriv-rules}.
 
 \begin{figure}
-  \begin{center}
+  \centering
     \begin{tabular}{|c c|}
       \hline 
       & \\
@@ -445,12 +446,34 @@ rules are presented in the figure \ref{deriv-rules}.
         \DisplayProof 
       } \\ 
      
+     & \\
+
+      \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A  $
+        $ t : Nat[I, J] $}
+        \noLine
+      \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
+      $H \ge \otriangleup_{b}^{0, K} $}
+        \noLine
+      \UnaryInfC{$(a,b,\phi); (a < I,b < H, \Phi) \vdash_{\varepsilon}$ 
+      $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I + b + 1 + 1/b\} \sqsubseteq A $}
+        \noLine
+      \UnaryInfC{$(a,\phi); (a < K, \Phi) \vdash_{\varepsilon}$ 
+      $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I/b\} \sqsubseteq C $}
+        \noLine
+      \UnaryInfC{$\phi; \Phi \vdash_{\varepsilon}$ 
+      $\Sigma \sqsubseteq \sum_{b<H} \Gamma$}
+
+      \RightLabel{(Rec)}
+        \UnaryInfC{$\phi; \Phi; \Sigma \vdash^{\varepsilon}_{H+\sum_{b<H}J}$
+        $fix~x.t~:~[a<K]~C$}
+      \DisplayProof \\
+
      &\\
 
       \hline
       
     \end{tabular}
-  \end{center}
+
   \caption{Some typing rules of d$l$PCF$_{V}$}
   \label{deriv-rules}.
 \end{figure}
@@ -461,7 +484,7 @@ The best way to understand all the concepts behind $ dlPCF_{V} $ is to
 explain them with an example. Let's take the add function defined by:
 
 \begin{center}
-$fix\;f.\lambda yz.\;ifz\;y\;then\;0\;else\;s(f\;p(y)\;z)$
+$add~=~fix\;f.\lambda yz.\;ifz\;y\;then\;0\;else\;s(f\;p(y)\;z)$
 \end{center}
 
 Its dependent type is the following:
@@ -477,7 +500,7 @@ $\vdash^{\varepsilon}_{K}~add~:~[a~<~1]~\cdot~Nat[f]~\multimap~~[c~<~1]~\cdot~(N
 \end{center}
 
 As explained previously, annotations like $[x~<~n]$ before a function
-indicate the number of times the function is copied in a term. Thus
+in $ dlPCF_{V} $  indicate the number of times the function is copied in a term. Thus
 $[a~<~1]$ and $[c~<~1]$ represent that both the partial function with
 the fixpoint f and one argument and the fixpoint f with its two
 arguments applied are copied only once in the term.
@@ -492,26 +515,22 @@ recursive function f (i.e $t\;=\lambda
 yz.\;ifz\;y\;then\;0\;else\;s(f\;p(y)\;z)$) from an informal point of
 view is straightforward. It reduces to counting how many times the
 bounded variables y and z will be used every time the term t is
-reduced. Since both y and z will be copied only once the weight of the
+substituted. Since both y and z will be copied only once the weight of the
 term t is 2.
 
 The more interesting part in the process of calculating the weight of
 add is replacing the parameter f by a recursive function that is
 invoked as long as the first parameter it receives is bigger than
-zero. The rule that defines typing for recursion is the following:
-
-\begin{center}
-%% TODO: Add the typing function for recursion
-\end{center}
+zero. The rule that defines typing for recursion is defined in \ref{deriv-rules}.
 
 By intuition the cost of a term with a recursive call is the sum of
 the cost of all times the term is called recursively. The equational
-context $\epsilon$ allows us to calculate that cost. The context is
+context $\varepsilon$ allows us to calculate that cost. The context is
 parameterized on b, the level of the recursion the execution is in. In 
-$\epsilon$ for the function add we define the following terms:
+$\varepsilon$ for the function add we define the following terms:
 
 
-\begin{itemize}%%[ht]
+\begin{itemize}
 \item \textbf{K} : represent the number of recursive calls.
 \item \textbf{I} : is the number of times the recursive function will be called at
 the level b. 
@@ -563,7 +582,7 @@ parameter has been fully decomposed. I represents the number of
 substitutions of the fixpoint function f
 
 
-With the elements given by $\epsilon$, calculating the cost of add
+With the elements given by $\varepsilon$, calculating the cost of add
 reduces to solving the $H + \sum\limits_{b<H} (2) $, where 2
 represents the cost of the term t previously explained.
 
@@ -595,9 +614,7 @@ Stacks are terms from the following grammar:
 Finally, a process $P$ is a pair $c~*~\pi$ of a closure and a stack. The process
 evaluation is given in the figure \ref{cek-eval-closure}.
 
-The PCF can be compiled, or evaluated, using the rules defined in the figure \ref{cek-eval-rules}
-
-\begin{figure}[ht]
+\begin{figure}[!ht]
   \begin{center}
     \begin{tabular}{|c c c c c c c|}
       \hline
@@ -623,7 +640,9 @@ The PCF can be compiled, or evaluated, using the rules defined in the figure \re
 \end{figure}
 
 
-\begin{figure}
+The PCF can be compiled, or evaluated, using the rules defined in the figure \ref{cek-eval-rules}
+
+\begin{figure}[!ht]
   \begin{center}
     \begin{tabular}{|c c c c c c c|}
       \hline
