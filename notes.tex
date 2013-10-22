@@ -446,35 +446,37 @@ rules are presented in the figure \ref{deriv-rules}.
         \DisplayProof 
       } \\ 
      
-     & \\
+      & \\
+      
+      \multicolumn{2}{|c|}{
+        \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A  $
+          $ t : Nat[I, J] $}
+        \noLine
+        \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
+          $H \ge \otriangleup_{b}^{0, K} $}
+        \noLine
+        \UnaryInfC{$(a,b,\phi); (a < I,b < H, \Phi) \vdash_{\varepsilon}$ 
+          $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I + b + 1 + 1/b\} \sqsubseteq A $}
+        \noLine
+        \UnaryInfC{$(a,\phi); (a < K, \Phi) \vdash_{\varepsilon}$ 
+          $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I/b\} \sqsubseteq C $}
+        \noLine
+        \UnaryInfC{$\phi; \Phi \vdash_{\varepsilon}$ 
+          $\Sigma \sqsubseteq \sum_{b<H} \Gamma$}
 
-      \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A  $
-        $ t : Nat[I, J] $}
-        \noLine
-      \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
-      $H \ge \otriangleup_{b}^{0, K} $}
-        \noLine
-      \UnaryInfC{$(a,b,\phi); (a < I,b < H, \Phi) \vdash_{\varepsilon}$ 
-      $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I + b + 1 + 1/b\} \sqsubseteq A $}
-        \noLine
-      \UnaryInfC{$(a,\phi); (a < K, \Phi) \vdash_{\varepsilon}$ 
-      $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I/b\} \sqsubseteq C $}
-        \noLine
-      \UnaryInfC{$\phi; \Phi \vdash_{\varepsilon}$ 
-      $\Sigma \sqsubseteq \sum_{b<H} \Gamma$}
-
-      \RightLabel{(Rec)}
+        \RightLabel{(Rec)}
         \UnaryInfC{$\phi; \Phi; \Sigma \vdash^{\varepsilon}_{H+\sum_{b<H}J}$
-        $fix~x.t~:~[a<K]~C$}
-      \DisplayProof \\
-
+          $fix~x.t~:~[a<K]~C$}
+        \DisplayProof 
+      } \\
+      
      &\\
 
       \hline
       
     \end{tabular}
 
-  \caption{Some typing rules of d$l$PCF$_{V}$}
+  \caption{Typing rules of d$l$PCF$_{V}$}
   \label{deriv-rules}.
 \end{figure}
 
