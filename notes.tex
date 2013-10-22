@@ -46,7 +46,7 @@ Synthesis}
 %% \chapter{Article}
 
 \paragraph{Abstract} 
-The linear dependent types are powerful tools to prove the termination of
+Linear dependent types are powerful tools to prove the termination of
 programs and evaluate its computational cost. The d$l$PCF type system is an
 application of those ideas on Plotkin's PCF, giving a complete langage that can
 easily interpreted in a CEK-like abstract machine.
@@ -54,11 +54,11 @@ easily interpreted in a CEK-like abstract machine.
 \section{Introduction}
 
 Types and types systems are an extremely useful and powerful tools
-that warranty that a program verifies certain properties, mainly that
+that guarantee that a program verifies certain properties, mainly that
 it ``cannot go wrong'' (i.e. there shouldn't be types
 incompatibilities and crash during the execution), especially with
 languages using strong type systems. However, most types systems
-aren't capable to catch other properties like termination and the
+aren't capable to catch other properties like termination and
 execution time, i.e. the computational complexity. For example, we can
 consider this simple factorial function:
 
@@ -71,11 +71,10 @@ only the natural integers, but there is no other way to check it before
 executing the function.
 
 The idea of the linear dependent types \cite{ldtrc} is to extend a type system
-to add the ability for the typechecker to, given a program: verify that it
+to add the ability for the typechecker to, given a program, verify that it
 terminates, give an approximation of its computational complexity and specify
-the semantics of its behavior. Plotkin's PCF, which is a lambda calculus
-extended with natural integers, will be used as a language and types (only Nat
-and functions on Nat actually), adding the two following properties :
+the semantics of its behavior. The language used will be Plotkin's
+PCF with the two following two properties added:
 
 \begin{itemize}
 \item \textbf{Linearity} : being able to catch the number of evaluations required
@@ -87,47 +86,13 @@ and functions on Nat actually), adding the two following properties :
 
 Such PCF programs, typed with d$l$PCF, can then be interpreted by Krivine's
 Abstract Machine for a Call-by-Name evaluation strategy, but this setting is not
-really efficient, and few languages are actually using this strategy. the idea
+really efficient, and few languages are actually using it. The idea
 is then to extend the original dlPCF (called d$l$PCF$_{N} $) with the ability to
 type programs with a call-by-value strategy \cite{ldtcbv}, namely d$l$PCF$_{v} $,
   and use the Felleisen and Freidman's CEK machine to interpret it.
 
-\section{Introduction to linear and dependent types}
 
-Linear and dependent types are two completely different
-concepts. Linear types come from Girard's linear logic
-\cite{girard1987linear} a really powerful extension of classical logic
-that expresses well resource manipulation. It does so by controlling
-the use of the rules of contraction and weakening, two rules that
-don't fit in a system where propositions do not represent unlimited
-resources. Limiting those rules changes the interpretation of
-propositions like $A \Rightarrow B$ that in classical logic means
-``if A is true then I can be sure that B is'' to linear logic
-propositions similar to $A!_n \Rightarrow B$ that means ``give me n
-elements of A and I can give you a B''. The application of linear logic to type
-systems is a type system where the developer can define constraints on the
-number of times a variable can be used. As an example using this kind of
-restriction a concurrent program can define a mutable variable without
-the risk of concurreny clashes since the type system ensures that the variable
-will only be used once.
-
-A dependent type is a type that is defined in relation to a value. One can think
-of a function that given a value returns a type. That function in the theory of
-dependent types is a family of types and the type of that function is a
-dependent type. A simple example of dependent types is the arrays of natural
-numbers. In most programming languages the types of the arrays define the kind
-of elements the array can contain. In languages with dependent types one can
-define a type family with the arrays that carry on their type the size of the
-array $array(numElements, typeofelements)$. Taking the example of an array of
-integers with one element its dependent type would be $oneElementArray:array(1,
-integer)$ . With this flexibility dependent type systems are capable of defining
-very expressive types that capture more meaningful restrictions that usual type
-systems.
-
-
-\section{Linear Dependent Types}
-
-\begin{figure}
+\begin{figure}[ht]
   \begin{center}
     $t~::=~n~|~x~|~(\lambda x.t)~|~p(t)~|~s(t)$ \\
     $|~ifz~$t$~then~$u$~else~$v $|~fix~x.t$
@@ -136,7 +101,7 @@ systems.
   \label{pcf-syntax}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[ht]
   \begin{center}
     \begin{tabular}{r c l}
       $(\lambda x.t)~v$ & $\rightarrow$ & $t[v/x]$ \\
@@ -152,8 +117,44 @@ systems.
   \label{pcf-sem}
 \end{figure}
 
+
+\section{Introduction to linear and dependent types}
+
+Linear and dependent types are two completely different
+concepts. Linear types come from Girard's linear logic
+\cite{girard1987linear} a really powerful extension of classical logic
+that expresses well resource manipulation. It does so by controlling
+the use of the rules of contraction and weakening, two rules that
+don't fit in a system where propositions do not represent unlimited
+resources. Limiting those rules changes the interpretation of
+propositions like $A \Rightarrow B$ that in classical logic means
+``if A is true then I can be sure that B is'' to linear logic
+propositions similar to $A!_n \multimap B$ that means ``give me n
+elements of A and I can give you a B''. The application of linear logic to type
+systems is a type system where the developer can define constraints on the
+number of times a variable can be used. As an example using this kind of
+restriction a concurrent program can define a mutable variable without
+the risk of concurreny clashes since the type system ensures that the variable
+will only be copied once.
+
+A dependent type is a type that is defined in relation to a value. One can think
+of a function that given a value returns a type. That function in the theory of
+dependent types is a family of types and the type of that function is a
+dependent type. A simple example of dependent types is the arrays of natural
+numbers. In most programming languages arrays are parameterized on the kind
+of elements the array can contain. In languages with dependent types one can
+define a type family with the arrays that carry on their type the size of the
+array: i.e. $array(numElements, typeofelements)$. Taking the example of an array of
+integers with one element its dependent type would be $oneElementArray:array(1,
+integer)$ . With this flexibility dependent type systems are capable of defining
+very expressive types that capture more meaningful restrictions that usual type
+systems.
+
+
+\section{Introduction to D$l$PCF}
+
 First of all, let's consider a simple program written in PCF (whose syntax and
-semantic are recalled in Figures \ref{pcf-syntax} and \ref{pcf-sem} :
+semantics are recalled in Figures \ref{pcf-syntax} and \ref{pcf-sem}) :
 
 \begin{center} 
   dbl = fix~f.$\lambda $x.~ifz~x~then~x~else~s(s(f(p(x)))) 
@@ -161,47 +162,41 @@ semantic are recalled in Figures \ref{pcf-syntax} and \ref{pcf-sem} :
 
 Simply, this function will return the double of its argument. In the PCF type
 system, it will be typed as Nat $\rightarrow$ Nat. However, there is no other
-information about its behavior and its meaning in this type, since, for example,
+information about its behavior and its meaning in this type. For example,
 a lot of unary functions can be typed the same way (an identity function for
 example). In particular, if we change p(x) by x, this function will have the
-same type, but it will diverge. We may need a type system that will be able to
-catch that diverging behavior, if that's ever possible.
+same type, but it will diverge. We need a type system that will be able to
+catch that diverging behavior.
 
-First of all, we can extend the types with informations on values,
+As a first step, we can extend the types with information on values,
 like for \emph{dbl} : $\tau$ = Nat[a] $\rightarrow$ Nat[2 $\times$
 a]. This way, we can see that the type contains the exact behavior of
-the function. However some functions, for example those who are called
-recursively like \emph{dbl}, will receive an initial parameter that
-will be altered an passed to the nested recursive calls. The type
-\emph{Nat[2,4]} is an example of the notation that is used to
-express that a function is called with values within a range, with 2
-being the lower bound of the range and 4 being the greater
-bound.
+the function. 
 
 \medskip
 
 Secondly, a linear dependent type system has the interesting property of
-being able to infer the complexity of a given function even it is
+being able to infer the complexity of a given function even if it is
 recursive. By infering the complexity of a function the linear
 dependent type system is also capable of identifying the functions that
-diverge. Using the ideas from linear logic, we could, for
-example give type the following way :
+diverge. Using the ideas from linear logic we could, for
+example give the following type to dbl :
 
 \begin{center}
 $\vdash_{I}$ dbl : Nat $\rightarrow$ Nat
 \end{center}
 
-In this type, I is the cost to compute dbl, and, since it can be given, returns
-the fact that the function doesn't diverge. For the dbl function where
+Where I is the cost to compute dbl. If I can be derived then 
+ the function doesn't diverge. For the dbl function where
 we replace the pred x by x the type system would realize that the function
 doesn't terminate and will show a compilation error.
 
-The idea behind dlPCF merges the imprecise types and the computational
-costs, combined with ideas from the bounded linear logic
-\cite{boundedlinearlogic}. This one allows a practical way to
+The idea behind dlPCF merges imprecise types and computational
+costs, combined with ideas from bounded linear logic (BLL)
+\cite{girard1992bounded}. BLL allows a practical way to
 represent the number of times a function uses its argument or it's
-substituted, depending on wether we talk about $ dlPCF_{N} $ or $
-dlPCF_{V} $. As an example the following formula in $ dlPCF_{V} $:
+substituted (depending on wether we talk about $ dlPCF_{N} $ or $
+dlPCF_{V} $). As an example the following formula in $ dlPCF_{V} $:
 
 \begin{center}
 $!_{n}\sigma~\multimap~\tau$
@@ -221,8 +216,26 @@ $\vdash_{g(a)}~t~:~!_{m}~Nat[a]~\multimap~Nat[f(a)]$
 In such a type, the function would use its argument $m$ times, returning 
 the value of $f$ applied to its argument, at a computational cost of
 $g(a)$. Actually, d$l$PCF is slightly improved by changing the $!_{m}\sigma$ for
-$[a < m] \cdot \sigma$, which makes the type more parametric, could serve as a
-variable bounder and allows multiple variables.
+$[a < m] \cdot \sigma$. That kind of typing still means that the
+parameter will be used m times, but every time the argument is used
+the parameter a will take a value in between 0 and $m-1$. The
+explanation of why this is useful will clarify when explaining an
+example of typing a recursive function later in the article, but 
+for the moment we can say that this parameter is used in 
+the equational context $\epsilon$ to define first order functions in
+terms that allow to calculate the cost of a function. This parametric
+definition of the type, has the advantage that it keeps the same skeleton
+for all types of $\sigma$.
+
+Some functions are called many times within the same term
+Functions that are called
+recursively like \emph{dbl}, will receive an initial parameter that
+will be altered an passed to the nested recursive calls. To express
+this fact D$l$PCF uses type ranges for the dependent types. The type
+\emph{Nat[2,4]} is an example of the notation that is used to
+express that a function is called with values within a range, with 2
+being the lower bound of the range and 4 being the greater
+bound.
 
 At last, there is another parameter that con be considered, which is the $\varepsilon$
 class of functions that can be used to tune the type system and cost of
@@ -446,28 +459,6 @@ rules are presented in the figure \ref{deriv-rules}.
         \DisplayProof 
       } \\ 
      
-     & \\
-
-      \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A  $
-        $ t : Nat[I, J] $}
-        \noLine
-      \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
-      $H \ge \otriangleup_{b}^{0, K} $}
-        \noLine
-      \UnaryInfC{$(a,b,\phi); (a < I,b < H, \Phi) \vdash_{\varepsilon}$ 
-      $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I + b + 1 + 1/b\} \sqsubseteq A $}
-        \noLine
-      \UnaryInfC{$(a,\phi); (a < K, \Phi) \vdash_{\varepsilon}$ 
-      $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I/b\} \sqsubseteq C $}
-        \noLine
-      \UnaryInfC{$\phi; \Phi \vdash_{\varepsilon}$ 
-      $\Sigma \sqsubseteq \sum_{b<H} \Gamma$}
-
-      \RightLabel{(Rec)}
-        \UnaryInfC{$\phi; \Phi; \Sigma \vdash^{\varepsilon}_{H+\sum_{b<H}J}$
-        $fix~x.t~:~[a<K]~C$}
-      \DisplayProof \\
-
      &\\
 
       \hline
@@ -521,7 +512,32 @@ term t is 2.
 The more interesting part in the process of calculating the weight of
 add is replacing the parameter f by a recursive function that is
 invoked as long as the first parameter it receives is bigger than
-zero. The rule that defines typing for recursion is defined in \ref{deriv-rules}.
+zero. The rule that defines typing for recursion is the following:
+
+\begin{figure}
+\caption{Typing rule for the fixpoint operator}
+
+      \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A  $
+        $ t : Nat[I, J] $}
+        \noLine
+      \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
+      $H \ge \otriangleup_{b}^{0, K} $}
+        \noLine
+      \UnaryInfC{$(a,b,\phi); (a < I,b < H, \Phi) \vdash_{\varepsilon}$ 
+      $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I + b + 1 + 1/b\} \sqsubseteq A $}
+        \noLine
+      \UnaryInfC{$(a,\phi); (a < K, \Phi) \vdash_{\varepsilon}$ 
+      $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I/b\} \sqsubseteq C $}
+        \noLine
+      \UnaryInfC{$\phi; \Phi \vdash_{\varepsilon}$ 
+      $\Sigma \sqsubseteq \sum_{b<H} \Gamma$}
+
+      \RightLabel{(Rec)}
+        \UnaryInfC{$\phi; \Phi; \Sigma \vdash^{\varepsilon}_{H+\sum_{b<H}J}$
+        $fix~x.t~:~[a<K]~C$}
+      \DisplayProof 
+
+\end{figure}
 
 By intuition the cost of a term with a recursive call is the sum of
 the cost of all times the term is called recursively. The equational
