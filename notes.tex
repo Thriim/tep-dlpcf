@@ -78,7 +78,7 @@ PCF with the two following two properties added:
 
 \begin{itemize}
 \item \textbf{Linearity} : being able to catch the number of evaluations required
-  for a term t, this way giving an idea of the computational complexity the
+  for a term $t$, this way giving an idea of the computational complexity the
   program.
 \item \textbf{Dependency} : the possibility to instantiate distinct copies of a term with
   different types.
@@ -87,9 +87,9 @@ PCF with the two following two properties added:
 Such PCF programs, typed with d$l$PCF, can then be interpreted by Krivine's
 Abstract Machine for a Call-by-Name evaluation strategy, but this setting is not
 really efficient, and few languages are actually using it. The idea
-is then to extend the original dlPCF (called d$l$PCF$_{N} $) with the ability to
-type programs with a call-by-value strategy \cite{ldtcbv}, namely d$l$PCF$_{v} $,
-  and use the Felleisen and Freidman's CEK machine to interpret it.
+is then to extend the original d$l$PCF (called d$l$PCF$_{N}$) with the ability to
+type programs with a call-by-value strategy \cite{ldtcbv}, namely d$l$PCF$_{v}$,
+and use the Felleisen and Freidman's CEK machine to interpret it.
 
 
 \begin{figure}[ht]
@@ -122,7 +122,7 @@ type programs with a call-by-value strategy \cite{ldtcbv}, namely d$l$PCF$_{v} $
 
 Linear and dependent types are two completely different
 concepts. Linear types come from Girard's linear logic
-\cite{girard1987linear} a really powerful extension of classical logic
+\cite{girard1987linear}, a really powerful extension of classical logic
 that expresses well resource manipulation. It does so by controlling
 the use of the rules of contraction and weakening, two rules that
 don't fit in a system where propositions do not represent unlimited
@@ -132,8 +132,8 @@ propositions like $A \Rightarrow B$ that in classical logic means
 propositions similar to $A!_n \multimap B$ that means ``give me n
 elements of A and I can give you a B''. The application of linear logic to type
 systems is a type system where the developer can define constraints on the
-number of times a variable can be used. As an example using this kind of
-restriction a concurrent program can define a mutable variable without
+number of times a variable can be used. As an example, using this kind of
+restriction, a concurrent program can define a mutable variable without
 the risk of concurreny clashes since the type system ensures that the variable
 will only be copied once.
 
@@ -146,7 +146,7 @@ of elements the array can contain. In languages with dependent types one can
 define a type family with the arrays that carry on their type the size of the
 array: i.e. $array(numElements, typeofelements)$. Taking the example of an array of
 integers with one element its dependent type would be $oneElementArray:array(1,
-integer)$ . With this flexibility dependent type systems are capable of defining
+integer)$ . With this flexibility, dependent type systems are capable of defining
 very expressive types that capture more meaningful restrictions that usual type
 systems.
 
@@ -173,11 +173,19 @@ like for \emph{dbl} : $\tau$ = Nat[a] $\rightarrow$ Nat[2 $\times$
 a]. This way, we can see that the type contains the exact behavior of
 the function. 
 
+%%the function. However some functions, for example those that are called
+%%recursively like \emph{dbl}, will receive an initial parameter that
+%%will be altered and passed to the nested recursive calls. The type
+%%\emph{Nat[2,4]} is an example of the notation that is used to
+%%express that a function is called with values within a range, with 2
+%%being the lower bound of the range and 4 being the greater
+%%bound.
+
 \medskip
 
 Secondly, a linear dependent type system has the interesting property of
-being able to infer the complexity of a given function even if it is
-recursive. By infering the complexity of a function the linear
+being able to infer the complexity of a given function even it is
+recursive. By infering the complexity of a function, the linear
 dependent type system is also capable of identifying the functions that
 diverge. Using the ideas from linear logic we could, for
 example give the following type to dbl :
@@ -188,15 +196,16 @@ $\vdash_{I}$ dbl : Nat $\rightarrow$ Nat
 
 Where I is the cost to compute dbl. If I can be derived then 
  the function doesn't diverge. For the dbl function where
-we replace the pred x by x the type system would realize that the function
+we replace the $p(x)$ by $x$ the type system would realize that the function
 doesn't terminate and will show a compilation error.
 
 The idea behind dlPCF merges imprecise types and computational
 costs, combined with ideas from bounded linear logic (BLL)
 \cite{girard1992bounded}. BLL allows a practical way to
 represent the number of times a function uses its argument or it's
-substituted (depending on wether we talk about $ dlPCF_{N} $ or $
-dlPCF_{V} $). As an example the following formula in $ dlPCF_{V} $:
+substituted (depending on wether we talk about d$l$PCF$_{N}$ or 
+d$l$PCF$_{V}$ respectively). As an example the following formula 
+in  d$l$PCF$_{V}$:
 
 \begin{center}
 $!_{n}\sigma~\multimap~\tau$
@@ -206,7 +215,7 @@ Means that $\sigma$ is substituted $n$ times during evaluation.
 
 \medskip
 
-Finally, a judgement in dlPCF would look this way, for a function from Nat to
+Finally, a judgement in d$l$PCF would look this way, for a function from Nat to
 Nat :
 
 \begin{center}
@@ -214,11 +223,11 @@ $\vdash_{g(a)}~t~:~!_{m}~Nat[a]~\multimap~Nat[f(a)]$
 \end{center}
 
 In such a type, the function would use its argument $m$ times, returning 
-the value of $f$ applied to its argument, at a computational cost of
-$g(a)$. Actually, d$l$PCF is slightly improved by changing the $!_{m}\sigma$ for
-$[a < m] \cdot \sigma$. That kind of typing still means that the
-parameter will be used m times, but every time the argument is used
-the parameter a will take a value in between 0 and $m-1$. The
+the value of $f$ applied to its argument ($a$ in this case), at a computational
+cost of $g(a)$. Actually, d$l$PCF is slightly improved by changing the 
+$!_{m}\sigma$ for $[a < m] \cdot \sigma$. That kind of typing still means that 
+the parameter will be used m times, but every time the argument is used
+the parameter $a$ will take a value in between 0 and $m-1$. The
 explanation of why this is useful will clarify when explaining an
 example of typing a recursive function later in the article, but 
 for the moment we can say that this parameter is used in 
@@ -237,9 +246,9 @@ express that a function is called with values within a range, with 2
 being the lower bound of the range and 4 being the greater
 bound.
 
-At last, there is another parameter that con be considered, which is the $\varepsilon$
-class of functions that can be used to tune the type system and cost of
-evaluation.
+At last, there is another parameter that can be considered, which is the
+$\varepsilon$ class of functions that can be used to tune the type system and
+cost of evaluation.
 
 Finally, we can type \emph{dbl} in d$l$PCF:
 
@@ -256,8 +265,10 @@ extension of the $\lambda$-calculus.
 More formally, the types will be defined as follows:
 
 \begin{center}
-  $\sigma, \tau~::=~Nat[I,J]~|~A~\multimap~\sigma$~~~~~(basic types) \\
-  $A, B~::=~[a~<~I] \cdot \sigma$~~~~~(modal types)
+  \begin{tabular}{l c r}
+    $\sigma, \tau~::=~Nat[I,J]~|~A~\multimap~\sigma$ & ~~~~ & (basic types) \\
+    $A, B~::=~[a~<~I] \cdot \sigma$ & ~~~~ & (modal types)
+  \end{tabular}
 \end{center}
 
 \subsection{Index terms and equational programs}
@@ -273,8 +284,8 @@ $I,J,K::= a | f(I_{1},...,I_{\alpha(f)} | \sum_{a<I} J |\;\otriangleup_{a}^{I,J}
 
 Where the first two constructions allow to define basic index variables and first order
 functions that return index values (natural numbers). The third element corresponds to
-a \emph{bounded sum}, mathematically a bounded sum is just the sum of all posible values of J 
-where a is replaced by the values from 0 to $I-1$. Later, when explaining an example 
+a \emph{bounded sum}, which is mathematically just the sum of all possible values of J 
+where $a$ is replaced by the values from 0 to $I-1$. Later, when explaining an example 
 of the typing of a linear dependent type we'll see that bounded sums allow for example to 
 aggregate all the substitutions that are made as part of all the recursive calls derived
 from a function application. The last element is called \emph{forest cardinality}. The forest
@@ -282,11 +293,11 @@ cardinality is calculated by the method defined in the section 3.1 of \cite{ldtc
 get into the details of how to calculate it but we're interested by its application to 
 linear dependent types. Basically for a given number of trees that describe the calls, including
 the recursive calls involved in the evaluation of a term, the forest cardinality allows to
-define the number of recursive calls that are a left when the evaluation is inside a given
+define the number of recursive calls that are left when the evaluation is inside a given
 level provided by a parameter. The parameters I and J represent respectively the level of the 
 evaluation and the number of subtrees starting by the level I that will be evaluated. The 
 utility of this concept will be demonstrated when explaining how to calculate the cost of
-a recursive function like add in the example studied.
+a recursive function like $add$ in the example studied.
 
 \subsection{Typing additionnal features}
 
@@ -318,7 +329,7 @@ Finally, the type Nat[I] is, of course, a syntactic sugar for Nat[I,I]
 
 \subsection{Subtyping}
 
-Of course, d$l$PCF, due to its linear and dependent nature, is subject to
+Of course, d$l$PCF, due to its linear and dependant nature, is subject to
 subtyping. The inequality $\sqsubseteq$ can be used on types, with the rules
 described in the Figure \label{subtyping}.
 
@@ -364,7 +375,7 @@ We can now introduce the following form for typing judgements:
 
 The argument $K$ is the weight of $t$, in other word the maximal number of
 substitution during its evaluation. $\Phi$ are the constraints envrionnement,
-for exemple $(a~<~I)$ from $[a~<~I] \cdot Nat$, called the index context, and
+for example $(a~<~I)$ from $[a~<~I] \cdot Nat$, called the index context, and
 $\Gamma$ is the typing context, associating a type to each free variable of $t$.
 Finally, $\phi$ is a bounder for free variables contained in the other context
 arguments.The sums and bounded sums can be applied over contexts. The derivation
@@ -459,19 +470,43 @@ rules are presented in the figure \ref{deriv-rules}.
         \DisplayProof 
       } \\ 
      
+      & \\
+      
+      \multicolumn{2}{|c|}{
+        \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A  $
+          $ t : Nat[I, J] $}
+        \noLine
+        \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
+          $H \ge \otriangleup_{b}^{0, K} $}
+        \noLine
+        \UnaryInfC{$(a,b,\phi); (a < I,b < H, \Phi) \vdash_{\varepsilon}$ 
+          $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I + b + 1 + 1/b\} \sqsubseteq A $}
+        \noLine
+        \UnaryInfC{$(a,\phi); (a < K, \Phi) \vdash_{\varepsilon}$ 
+          $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I/b\} \sqsubseteq C $}
+        \noLine
+        \UnaryInfC{$\phi; \Phi \vdash_{\varepsilon}$ 
+          $\Sigma \sqsubseteq \sum_{b<H} \Gamma$}
+
+        \RightLabel{(Rec)}
+        \UnaryInfC{$\phi; \Phi; \Sigma \vdash^{\varepsilon}_{H+\sum_{b<H}J}$
+          $fix~x.t~:~[a<K]~C$}
+        \DisplayProof 
+      } \\
+      
      &\\
 
       \hline
       
     \end{tabular}
 
-  \caption{Some typing rules of d$l$PCF$_{V}$}
+  \caption{Typing rules of d$l$PCF$_{V}$}
   \label{deriv-rules}.
 \end{figure}
 
-\section{An example of $ dlPCF\_{v} $}
+\section{An example of d$l$PCF$_{V}$}
 
-The best way to understand all the concepts behind $ dlPCF_{V} $ is to
+The best way to understand all the concepts behind d$l$PCF$_{V}$ is to
 explain them with an example. Let's take the add function defined by:
 
 \begin{center}
@@ -484,14 +519,15 @@ Its dependent type is the following:
 $(Nat[f]\; =>\;(Nat[g]\; =>\;Nat[f + g]))$
 \end{center}
 
-Adding the annotations for linear dependent types in $ dlPCF_{V} $:
+Adding the annotations for linear dependent types in d$l$PCF$_{V}$:
 
 \begin{center}
-$\vdash^{\varepsilon}_{K}~add~:~[a~<~1]~\cdot~Nat[f]~\multimap~~[c~<~1]~\cdot~(Nat[g]~\multimap~Nat[f + g])$
+$\vdash^{\varepsilon}_{K}~add~:~[a~<~1] \cdot Nat[f]~\multimap~$
+  $[c~<~1] \cdot (Nat[g]~\multimap~Nat[f + g])$
 \end{center}
 
 As explained previously, annotations like $[x~<~n]$ before a function
-in $ dlPCF_{V} $  indicate the number of times the function is copied in a term. Thus
+in d$l$PCF$_{V}$  indicate the number of times the function is copied in a term. Thus
 $[a~<~1]$ and $[c~<~1]$ represent that both the partial function with
 the fixpoint f and one argument and the fixpoint f with its two
 arguments applied are copied only once in the term.
@@ -501,9 +537,9 @@ understand the process to calculate the cost of the function, also
 called its weight, that is represented in the previous formula by the
 term K. 
 
-Calculating the cost for the term t that is defined inside the
-recursive function f (i.e $t\;=\lambda
-yz.\;ifz\;y\;then\;0\;else\;s(f\;p(y)\;z)$) from an informal point of
+Calculating the cost for the term $t$ that is defined inside the
+recursive function f (i.e $t\;=\lambda$
+$yz.\;ifz\;y\;then\;0\;else\;s(f\;p(y)\;z)$) from an informal point of
 view is straightforward. It reduces to counting how many times the
 bounded variables y and z will be used every time the term t is
 substituted. Since both y and z will be copied only once the weight of the
@@ -547,6 +583,7 @@ $\varepsilon$ for the function add we define the following terms:
 
 
 \begin{itemize}
+
 \item \textbf{K} : represent the number of recursive calls.
 \item \textbf{I} : is the number of times the recursive function will be called at
 the level b. 
@@ -554,23 +591,27 @@ the level b.
 represents the level of nesting.
 \item \textbf{J} : is the number of copies of f. the first is not considered and
 the last recursive call doesn't use it.
+
 \end{itemize}
 
 Figure~\ref{definitionindexterms} represents the definitions of the index
 terms for the add function.
 
+
 \begin{figure}[ht]
-\label{definitionindexterms}
-\caption{Equational context for add function}
 \begin{center}
- $I~=~if~b~<~f~then~1~else~0$
+  \begin{tabular}{l}
+    $I~=~if~b~<~f~then~1~else~0$ \\
 
- $J~=~f~-~b~-~1$
+    $J~=~f~-~b~-~1$ \\
 
- $H~=~f~-~b$
+    $H~=~f~-~b$ \\
 
- $K~=~f~-~b~+~1$
+    $K~=~f~-~b~+~1$ \\
+  \end{tabular}
 \end{center}
+\caption{Equational context for add function}
+\label{definitionindexterms}
 \end{figure}
 
 The meaning of all the index terms defined previously can be better
@@ -580,7 +621,6 @@ given at figure \ref{exectrace}.
 
 \begin{figure}
 \label{exectrace}
-\caption{Execution trace of add 3 4}
 \begin{center}
 \begin{verbatim}
 add 3 4 = fix f succ (f pred 3 4)
@@ -589,18 +629,20 @@ add 3 4 = fix f succ (f pred 3 4)
             add 0 4 = fix f 0 
 \end{verbatim}
 \end{center}
+
+\caption{Execution trace of add 3 4}
 \end{figure}
 
-With the given formulas and the execution trace we can see how I will always be 1 unless
-$b~>=~f$, that is I will be 0 when the first parameter to add is zero
-meaning that there will not be more recursive calls when the first
-parameter has been fully decomposed. I represents the number of
-substitutions of the fixpoint function f
+With the given formulas and the execution trace we can see how $I$ will always
+be 1 unless $b~\geq~f$, that is $I$ will be 0 when the first parameter to add is
+zero meaning that there will not be more recursive calls when the first
+parameter has been fully decomposed. $I$ represents the number of substitutions of
+the fixpoint function f
 
 
 With the elements given by $\varepsilon$, calculating the cost of add
 reduces to solving the $H + \sum\limits_{b<H} (2) $, where 2
-represents the cost of the term t previously explained.
+represents the cost of the term $t$ previously explained.
 
 %% TODO: Add the section that explains how to calculate <>0 to n
 %% TODO: Finish this section
@@ -609,12 +651,12 @@ represents the cost of the term t previously explained.
 \section{Krivine's Abstract Machine and CEK}
 
 The d$l$PCF can be interpreted by the KAM machine, but it is not really
-efficient, and the article from [Ugo Dal Lago \& Barbara Petit] presents a
-alternative for the CEK abstract machine.
+efficient, and the article from Ugo Dal Lago \& Barbara Petit \cite{ldtcbv}
+presents an alternative for the CEK abstract machine.
 
 The CEK machine consists only on a closure and a stack, and few rules to
 interact. A closure is a pair $v =<t;\xi>$, where $t$ is a value and $\xi$
-an environment, in other term a mapping from variables to value closures:
+an environment, in other terms a mapping from variables to value closures:
 
 \begin{center}
   $\xi ~ ::=~\O~|~(x \mapsto v) \cdot \xi$
