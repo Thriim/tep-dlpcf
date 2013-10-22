@@ -511,7 +511,7 @@ parameterized on b, the level of the recursion the execution is in. In
 $\epsilon$ for the function add we define the following terms:
 
 
-\begin{itemize}[ht]
+\begin{itemize}%%[ht]
 \item \textbf{K} : represent the number of recursive calls.
 \item \textbf{I} : is the number of times the recursive function will be called at
 the level b. 
@@ -643,6 +643,12 @@ The PCF can be compiled, or evaluated, using the rules defined in the figure \re
   \caption{The CEK$_{PCF}$ evaluation rules}
   \label{cek-eval-rules}
 \end{figure}
+
+\section{Conclusion}
+
+Linear and dependent types can be really powerful and give some informations
+that can be really useful, like the termination of a program or its
+computational cost.
 
 
 \bibliographystyle{plain}
