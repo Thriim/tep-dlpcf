@@ -1,0 +1,118 @@
+\documentclass{beamer}
+ 
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{minted}
+\usepackage[french]{babel}
+
+\usetheme{Warsaw}
+
+\begin{document}
+
+\begin{frame}
+\frametitle{Classical Type systems don't assure termination}
+
+\begin{itemize}
+\item 
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{ocaml}
+add = fix f y z => ifz y then 0 else (succ (f (pred y) z)
+\end{minted}
+\item $divergef : fix f y z => ifz y then 0 else (succ (f y z))$
+\item Both have type Nat -> Nat but one diverges and the other doesn't
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Classical type systems don't inform about complexity}
+\begin{itemize}
+\item Which one is best? 
+\item $identity : x => x$ 
+\item $madIdentity: fix f x => ifz x then 0 else (succ (f (pred x))$
+\end{itemize}
+\end{frame}
+
+\end{document}
+
+Two improvements over classical type systems
+
+- Dependent types
+
+The type carries more meaningful information about the transformations
+perform inside a function.
+
+e.g
+
+sized arrays => ArrayList<Integer, Size>  
+
+- Linear types
+
+Come from linear logic, allow to  define variables that cannot be shared
+(e.g iterator) or that can be shared only "n" times.
+
+e. g
+
+Types define the number of times a variable is "used"
+
+Putting them together
+
+- Dependent types provide information about the function inputs and outputs
+
+- Linear types provide information about how many times a parameter is
+  copied or a function is used (substitution)
+
+- Taking the information from both + giving an extra context (Epsilon) allows to
+infer a function's complexity and thus termination
+
+
+A simple example
+
+  add: fix f y z => ifz y then 0 else (succ (f (pred y) z)
+
+  dependent type: (Nat[a] => (Nat[b] => Nat[a + b]))
+
+  How many substitutions will there be? 
+
+  Informally: substitutions = subst-of-recursive-function +
+  (subst-per-recursive-call * number-recursive-calls)
+
+A simple example (2)
+
+  Epsilon will save us:  
+
+  I (how many recursive calls) = If b < f then 1 else 0
+
+  subst-of-recursive-functon = <>0..f for b of I
+
+  e.g add f=3 g=4
+
+  add 3 4 = succ(add 2 4)
+  -> add 2 4 = succ(add 1 2)
+  -> -> add 1 4 = succ(add 0 4)
+  -> -> -> add 0 4 = 0
+
+  add is substituted 4 times (last time it's substituted even if its not
+  called)
+
+A simple example (3)
+
+  number-recursive-calls = subst-of-recursive-function
+  
+  e.g add =>
+
+  subst-per-recursive-call = 2 = 1 (call to succ) + 1 (call to pred)
+
+
+  So the final cost is 
+  
+  cost = 4 + (2 * 4) = (f + 1) + 2 * (f + 1) 
+
+An abstract machine for PCF
+
+
