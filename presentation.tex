@@ -4,45 +4,74 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{graphicx}
-\usepackage{minted}
 \usepackage[french]{babel}
 
 \usetheme{Warsaw}
 
 \begin{document}
 
-\begin{frame}
+\begin{frame}[fragile]
 \frametitle{Classical Type systems don't assure termination}
 
-\begin{itemize}
-\item 
-\begin{minted}[mathescape,
-               linenos,
-               numbersep=5pt,
-               gobble=2,
-               frame=lines,
-               framesep=2mm]{ocaml}
+
+\begin{verbatim}
 add = fix f y z => ifz y then 0 else (succ (f (pred y) z)
-\end{minted}
-\item $divergef : fix f y z => ifz y then 0 else (succ (f y z))$
-\item Both have type Nat -> Nat but one diverges and the other doesn't
+\end{verbatim}
+
+\begin{verbatim}
+divergef = fix f y z => ifz y then 0 else (succ (f y z))
+\end{verbatim}
+Both have type Nat -> Nat but one diverges and the other doesn't
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Classical type systems don't inform about complexity}
+Which one is best? 
+\begin{verbatim}
+ identity = x => x 
+\end{verbatim}
+\begin{verbatim}
+madIdentity = fix f x => 
+                ifz x then 0 else (succ (f (pred x))
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Two improvements}
+\begin{itemize}
+\item Dependent types
+\begin{figure}
+\begin{verbatim}
+ add : Nat[a] => Nat[b] => Nat[a+b]
+\end{verbatim}
+\end{figure}
+\item Linear types \\
+\begin{figure}
+\begin{center}
+$\sigma~\multimap~\tau$
+\end{center}
+\end{figure}
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Classical type systems don't inform about complexity}
+\begin{frame}[fragile]
+\frametitle{Putting them together}
 \begin{itemize}
-\item Which one is best? 
-\item $identity : x => x$ 
-\item $madIdentity: fix f x => ifz x then 0 else (succ (f (pred x))$
+\item Dependent types provide information about the function's inputs and outputs
+
+\item Linear types provide information about how many times a parameter is
+  copied or a function is used (substitution)
+
+\item Taking the information from both + giving an extra context
+($\varepsilon$) allows to infer a function's complexity and thus termination
 \end{itemize}
 \end{frame}
 
 \end{document}
 
+% Slide 3
 Two improvements over classical type systems
 
-- Dependent types
 
 The type carries more meaningful information about the transformations
 perform inside a function.
@@ -60,6 +89,7 @@ e. g
 
 Types define the number of times a variable is "used"
 
+% Slide 4
 Putting them together
 
 - Dependent types provide information about the function inputs and outputs
