@@ -400,8 +400,8 @@ rules are presented in the figure \ref{deriv-rules}.
       & \\
       
       \multicolumn{2}{|c|}{
-        \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A  $
-          $ t : Nat[I, J] $}
+        \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A \vdash_{J}^{\varepsilon}$
+        $ t : [a<1]\cdot B$}
         \noLine
         \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
           $H \ge \otriangleup_{b}^{0, K} I$}
@@ -547,8 +547,8 @@ zero. The rule that defines typing for recursion is the following:
 
 \begin{figure}[ht]
 
-      \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A  $
-        $ t : Nat[I, J] $}
+      \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A \vdash_{J}^{\varepsilon}$
+        $ t : [a<1]\cdot B$}
         \noLine
       \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
       $H \ge \otriangleup_{b}^{0, K}I $}
