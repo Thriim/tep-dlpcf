@@ -729,9 +729,6 @@ The PCF can be compiled, or evaluated, using the rules defined in the figure \re
 
 \section{Conclusion}
 
-\textbf{Needs to be completed}
-
-\medskip
 
 Linear and dependent types can be really powerful and give some information
 that can be really useful, like the termination of a program or its
@@ -739,10 +736,19 @@ computational cost. This type theory remains on the linear logic, and especially
 on the bounded linear logic. where the typing derivation rules can be kind of
 complicated, it is powerful enough associated with PCF, in other word a simple
 typed $\lambda$-calculus. Such a language can then be compiled in a bytecode for
-CEK, a SECD-based abstract machine. 
+CEK, a SECD-based abstract machine. We have shown a complete example on how to
+apply this theory on an actual PCF defined function.
+
+This type system was initially defined for a Call-by-name strategy with an
+interpretation in a KAM abstract machine, but this approach gave the ability to
+formalize d$l$PCF in call-by-value, which is more efficient and more realistic
+with actual languages.
 
 Linear dependent types are simply defined on natural integer, but what could be
-interesting would be to add them on other types, like floating point numbers.
+interesting would be to add them on other types, like floating point
+numbers. The next idea is mainly how to add the linear dependent types to
+languages that are richer in terms of syntax and semantics, and especially with
+more complex types.
 
 
 \bibliographystyle{plain}
