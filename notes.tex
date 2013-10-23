@@ -173,14 +173,6 @@ like for \emph{dbl} : $\tau$ = Nat[a] $\rightarrow$ Nat[2 $\times$
 a]. This way, we can see that the type contains the exact behavior of
 the function. 
 
-%%the function. However some functions, for example those that are called
-%%recursively like \emph{dbl}, will receive an initial parameter that
-%%will be altered and passed to the nested recursive calls. The type
-%%\emph{Nat[2,4]} is an example of the notation that is used to
-%%express that a function is called with values within a range, with 2
-%%being the lower bound of the range and 4 being the greater
-%%bound.
-
 \medskip
 
 Secondly, a linear dependent type system has the interesting property of
@@ -224,31 +216,7 @@ $\vdash_{g(a)}~t~:~!_{m}~Nat[a]~\multimap~Nat[f(a)]$
 
 In such a type, the function would use its argument $m$ times, returning 
 the value of $f$ applied to its argument ($a$ in this case), at a computational
-cost of $g(a)$. Actually, d$l$PCF is slightly improved by changing the 
-$!_{m}\sigma$ for $[a < m] \cdot \sigma$. That kind of typing still means that 
-the parameter will be used m times, but every time the argument is used
-the parameter $a$ will take a value in between 0 and $m-1$. The
-explanation of why this is useful will clarify when explaining an
-example of typing a recursive function later in the article, but 
-for the moment we can say that this parameter is used in 
-the equational context $\epsilon$ to define first order functions in
-terms that allow to calculate the cost of a function. This parametric
-definition of the type, has the advantage that it keeps the same skeleton
-for all types of $\sigma$.
-
-Some functions are called many times within the same term
-Functions that are called
-recursively like \emph{dbl}, will receive an initial parameter that
-will be altered an passed to the nested recursive calls. To express
-this fact D$l$PCF uses type ranges for the dependent types. The type
-\emph{Nat[2,4]} is an example of the notation that is used to
-express that a function is called with values within a range, with 2
-being the lower bound of the range and 4 being the greater
-bound.
-
-At last, there is another parameter that can be considered, which is the
-$\varepsilon$ class of functions that can be used to tune the type system and
-cost of evaluation.
+cost of $g(a)$. 
 
 Finally, we can type \emph{dbl} in d$l$PCF:
 
@@ -256,20 +224,7 @@ Finally, we can type \emph{dbl} in d$l$PCF:
 $\vdash^{\varepsilon}_{h(a)}~dbl~:~[b~<~a] \cdot Nat[a]~\multimap~Nat[2~\times~a]$
 \end{center}
 
-\section{d$l$PCF}
-
-
-Of course, programs that will be considered will be written in PCF, which is an
-extension of the $\lambda$-calculus. 
-
-More formally, the types will be defined as follows:
-
-\begin{center}
-  \begin{tabular}{l c r}
-    $\sigma, \tau~::=~Nat[I,J]~|~A~\multimap~\sigma$ & ~~~~ & (basic types) \\
-    $A, B~::=~[a~<~I] \cdot \sigma$ & ~~~~ & (modal types)
-  \end{tabular}
-\end{center}
+\section{d$l$PCF - Main concepts}
 
 \subsection{Index terms and equational programs}
 
@@ -288,7 +243,9 @@ a \emph{bounded sum}, which is mathematically just the sum of all possible value
 where $a$ is replaced by the values from 0 to $I-1$. Later, when explaining an example 
 of the typing of a linear dependent type we'll see that bounded sums allow for example to 
 aggregate all the substitutions that are made as part of all the recursive calls derived
-from a function application. The last element is called \emph{forest cardinality}. The forest
+from a function application. 
+
+The last element is called \emph{forest cardinality}. The forest
 cardinality is calculated by the method defined in the section 3.1 of \cite{ldtcv}, we won't
 get into the details of how to calculate it but we're interested by its application to 
 linear dependent types. Basically for a given number of trees that describe the calls, including
@@ -299,71 +256,40 @@ evaluation and the number of subtrees starting by the level I that will be evalu
 utility of this concept will be demonstrated when explaining how to calculate the cost of
 a recursive function like $add$ in the example studied.
 
-\subsection{Typing additionnal features}
 
+\subsection{Typing}
 
-Most of the \emph{features} of the d$l$PCF type system where presented, but
-there exists another one that can introduce the typing rules. Let's consider a
-type $\sigma~=~[a~<~I] \cdot A\{a/x\}$, where, as explained before, is the type
-where $a$ takes successively the values from 0 to I $-$ 1. Now, considering a
-type $\tau~=~[b~<~J] \cdot A\{b+I/x\}$, an interesting proprety here is the fact
-$b$ will take the values from $I$ to $J$, in the same type $A$, for the same value
-$x$ that will be substituted. We can introduce the operator $\uplus$ on the
-modal types, whose result will be:
+Types in d$l$PCF are defined according to the following grammar:
 
 \begin{center}
-$\sigma~\uplus~\tau~\equiv~\alpha~=~[a~<~J] \cdot A\{a/x\}$
+  \begin{tabular}{l c r}
+    $\sigma, \tau~::=~Nat[I,J]~|~A~\multimap~\sigma$ & ~~~~ & (basic types) \\
+    $A, B~::=~[a~<~I] \cdot \sigma$ & ~~~~ & (modal types)
+  \end{tabular}
 \end{center}
 
-Formally, the binary operator $\uplus$ has the ability to merge two types giving
-the linear and bounded types property. It is also possible to define an
-operation of bounded sum on modal types. Imagine the following type :
+Basic types include the definition of functions as linear implications
+and the naturals. The fact that naturals are defined with two indexes
+is needed to express that on its evaluation a function may be
+substituted many times every time with a different value as an
+input. The first index corresponds to the lower bound and the second
+input to the greater bound of all the inputs the function will
+received. For example when evaluating the function $dbl$ to the
+argument n, the recursive function $f$ will be applied to all the
+values from $0$ to $n-1$. That means that the parameter of $f$ can be
+defined as $Nat[0,n-1]$.
 
-\begin{center}
-  $\tau~=~[b~<~J] \cdot A\{b~+~\sum_{d<a}J\{d/a\}/c\}$
-\end{center}
-
-Its bounded sum will then be : $\sum_{a<I} \tau ~=~ [c~<~\sum_{a<I}J] \cdot A$. 
-
-Finally, the type Nat[I] is, of course, a syntactic sugar for Nat[I,I]
-
-\subsection{Subtyping}
-
-Of course, d$l$PCF, due to its linear and dependant nature, is subject to
-subtyping. The inequality $\sqsubseteq$ can be used on types, with the rules
-described in the Figure \label{subtyping}.
-
-\begin{figure}
-  \begin{center}
-    \begin{tabular}{|c c|}
-      \hline
-      & \\
-      \AxiomC{$\phi; \Phi \models~ K \leq I$}
-      \AxiomC{$\phi; \Phi \models~ J \leq H$}
-      \BinaryInfC{$\phi; \Phi \vdash Nat[I, J] \sqsubseteq Nat[K,H]$}
-      \DisplayProof & 
-
-      \AxiomC{$\phi; \Phi \vdash \sigma' \sqsubseteq \sigma$}
-      \AxiomC{$\phi; \Phi \vdash \tau \sqsubseteq \tau'$}
-      \BinaryInfC{
-        $\phi; \Phi \vdash \sigma \multimap \tau \sqsubseteq \sigma'\multimap \tau'$}
-      \DisplayProof \\ 
-      & \\
-      \multicolumn{2}{|c|}{
-        \AxiomC{$(a,\phi); (a > J,\Phi) \vdash A \sqsubseteq B$}
-        \AxiomC{$\phi; \Phi \vdash J \leq I$}
-        \BinaryInfC{
-          $\phi; \Phi \vdash \sigma \multimap [a < I] \cdot A \sqsubseteq [a < J]$
-          $\cdot B $}
-        \DisplayProof 
-      } \\
-      & \\
-      \hline
-    \end{tabular}
-    \end{center}
-  \caption{Subtyping rules}
-  \label{subtyping}
-\end{figure}
+In the modal types, d$l$PCF improves the notation given by BLL by changing the 
+$!_{m}\sigma$ for $[a < m] \cdot \sigma$. That kind of typing still means that 
+the parameter will be used m times, but every time the argument is used
+the parameter $a$ will take a value in between 0 and $m-1$. The
+explanation of why this is useful will become more clear later
+while studying how to type a recursive function with an example, but 
+for the moment we can say that this parameter is used in 
+the equational context $\varepsilon$ to define first order functions
+in the index terms. This allow to calculate the cost of a function and
+by being parametric, this definition of the type, has the advantage
+that it keeps the same skeleton for all types of $\sigma$.
 
 \subsection{Typing judgements}
 
@@ -477,7 +403,7 @@ rules are presented in the figure \ref{deriv-rules}.
           $ t : Nat[I, J] $}
         \noLine
         \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
-          $H \ge \otriangleup_{b}^{0, K} $}
+          $H \ge \otriangleup_{b}^{0, K} I$}
         \noLine
         \UnaryInfC{$(a,b,\phi); (a < I,b < H, \Phi) \vdash_{\varepsilon}$ 
           $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I + b + 1 + 1/b\} \sqsubseteq A $}
@@ -503,6 +429,73 @@ rules are presented in the figure \ref{deriv-rules}.
   \caption{Typing rules of d$l$PCF$_{V}$}
   \label{deriv-rules}.
 \end{figure}
+
+\subsection{Typing additionnal features}
+
+
+Most of the \emph{features} of the d$l$PCF type system where presented, but
+there exists another one that can introduce the typing rules. Let's consider a
+type $\sigma~=~[a~<~I] \cdot A\{a/x\}$, where, as explained before, is the type
+where $a$ takes successively the values from 0 to I $-$ 1. Now, considering a
+type $\tau~=~[b~<~J] \cdot A\{b+I/x\}$, an interesting proprety here is the fact
+$b$ will take the values from $I$ to $J$, in the same type $A$, for the same value
+$x$ that will be substituted. We can introduce the operator $\uplus$ on the
+modal types, whose result will be:
+
+\begin{center}
+$\sigma~\uplus~\tau~\equiv~\alpha~=~[a~<~J] \cdot A\{a/x\}$
+\end{center}
+
+Formally, the binary operator $\uplus$ has the ability to merge two types giving
+the linear and bounded types property. It is also possible to define an
+operation of bounded sum on modal types. Imagine the following type :
+
+\begin{center}
+  $\tau~=~[b~<~J] \cdot A\{b~+~\sum_{d<a}J\{d/a\}/c\}$
+\end{center}
+
+Its bounded sum will then be : $\sum_{a<I} \tau ~=~ [c~<~\sum_{a<I}J] \cdot A$. 
+
+Finally, the type Nat[I] is, of course, a syntactic sugar for Nat[I,I]
+
+\subsection{Subtyping}
+
+Of course, d$l$PCF, due to its linear and dependant nature, is subject to
+subtyping. The inequality $\sqsubseteq$ can be used on types, with the rules
+described in the Figure \ref{subtyping}.
+
+\begin{figure}[ht]
+  \begin{center}
+    \begin{tabular}{|c c|}
+      \hline
+      & \\
+      \AxiomC{$\phi; \Phi \models~ K \leq I$}
+      \AxiomC{$\phi; \Phi \models~ J \leq H$}
+      \BinaryInfC{$\phi; \Phi \vdash Nat[I, J] \sqsubseteq Nat[K,H]$}
+      \DisplayProof & 
+
+      \AxiomC{$\phi; \Phi \vdash \sigma' \sqsubseteq \sigma$}
+      \AxiomC{$\phi; \Phi \vdash \tau \sqsubseteq \tau'$}
+      \BinaryInfC{
+        $\phi; \Phi \vdash \sigma \multimap \tau \sqsubseteq \sigma'\multimap \tau'$}
+      \DisplayProof \\ 
+      & \\
+      \multicolumn{2}{|c|}{
+        \AxiomC{$(a,\phi); (a > J,\Phi) \vdash A \sqsubseteq B$}
+        \AxiomC{$\phi; \Phi \vdash J \leq I$}
+        \BinaryInfC{
+          $\phi; \Phi \vdash \sigma \multimap [a < I] \cdot A \sqsubseteq [a < J]$
+          $\cdot B $}
+        \DisplayProof 
+      } \\
+      & \\
+      \hline
+    \end{tabular}
+    \end{center}
+  \caption{Subtyping rules}
+  \label{subtyping}
+\end{figure}
+
 
 \section{An example of d$l$PCF$_{V}$}
 
@@ -533,31 +526,31 @@ the fixpoint f and one argument and the fixpoint f with its two
 arguments applied are copied only once in the term.
 
 However what is more interesting about the add function is to try to
-understand the process to calculate the cost of the function, also
+understand the process to calculate its cost, also
 called its weight, that is represented in the previous formula by the
 term K. 
 
 Calculating the cost for the term $t$ that is defined inside the
-recursive function f (i.e $t\;=\lambda$
+recursive function f (i.e: $t\;=\lambda$
 $yz.\;ifz\;y\;then\;0\;else\;s(f\;p(y)\;z)$) from an informal point of
 view is straightforward. It reduces to counting how many times the
 bounded variables y and z will be used every time the term t is
 substituted. Since both y and z will be copied only once the weight of the
-term t is 2.
+term t is 2. This is more formally expressed in the application rule
+available in figure~\ref{deriv-rules}
 
 The more interesting part in the process of calculating the weight of
 add is replacing the parameter f by a recursive function that is
 invoked as long as the first parameter it receives is bigger than
 zero. The rule that defines typing for recursion is the following:
 
-\begin{figure}
-\caption{Typing rule for the fixpoint operator}
+\begin{figure}[ht]
 
       \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A  $
         $ t : Nat[I, J] $}
         \noLine
       \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
-      $H \ge \otriangleup_{b}^{0, K} $}
+      $H \ge \otriangleup_{b}^{0, K}I $}
         \noLine
       \UnaryInfC{$(a,b,\phi); (a < I,b < H, \Phi) \vdash_{\varepsilon}$ 
       $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I + b + 1 + 1/b\} \sqsubseteq A $}
@@ -571,24 +564,42 @@ zero. The rule that defines typing for recursion is the following:
       \RightLabel{(Rec)}
         \UnaryInfC{$\phi; \Phi; \Sigma \vdash^{\varepsilon}_{H+\sum_{b<H}J}$
         $fix~x.t~:~[a<K]~C$}
-      \DisplayProof 
+      \DisplayProof \\
 
+       \caption{Typing rule for the fixpoint operator}
+       \label{fixpoint-deriv}
 \end{figure}
 
 By intuition the cost of a term with a recursive call is the sum of
-the cost of all times the term is called recursively. The equational
-context $\varepsilon$ allows us to calculate that cost. The context is
-parameterized on b, the level of the recursion the execution is in. In 
-$\varepsilon$ for the function add we define the following terms:
-
+the cost of all times the term is called recursively. Now we'll see
+how the rule in figure~\ref{fixpoint-deriv} defines formally this
+intuition. Explaining the meaning of the most important terms in the
+derivation will make this clear:
 
 \begin{itemize}
 
-\item \textbf{K} : represent the number of recursive calls.
+
+\item \textbf{b} : while evaluating the recursive function, $b$
+  corresponds to the level of nesting of the current evaluation of $x$
+ in the tree of recursive calls.
 \item \textbf{I} : is the number of times the recursive function will be called at
 the level b. 
-\item \textbf{H} : is calculated according to the formula explained in .... . It
-represents the level of nesting.
+\item \textbf{a}: if $I$ is the number of times the recursive function
+  will be substituted at the level $b$, $a$ represents for every
+  substitution of $x$ in $t$ the index of the substitution. (i.e: if
+  $x$ was substituted twice there would be one substitution of $x$
+  with $a=0$ and another with $a=1$).
+\item \textbf{K} : number of substitutions of the function introduced
+by the fixpoint operator 
+within the term $t$. That is the number of times $x$ is called inside
+a non-recursive evaluation of $t$.
+\item \textbf{H} : is the forest cardinality of the forest that
+  represents the tree of recursive calls that are executed as a result
+  of calling $add$. It corresponds to the number of times the
+  recursive function is substituted, in the case of $add~f~g$, it is
+  $H=f~+~1$.
+
+
 \item \textbf{J} : is the number of copies of f. the first is not considered and
 the last recursive call doesn't use it.
 
