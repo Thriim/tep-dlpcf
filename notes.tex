@@ -467,6 +467,7 @@ described in the Figure \ref{subtyping}.
 
 \begin{figure}[ht]
   \begin{center}
+    \makebox[\textwidth]{
     \begin{tabular}{|c c|}
       \hline
       & \\
@@ -491,7 +492,7 @@ described in the Figure \ref{subtyping}.
       } \\
       & \\
       \hline
-    \end{tabular}
+    \end{tabular}}
     \end{center}
   \caption{Subtyping rules}
   \label{subtyping}
@@ -686,24 +687,25 @@ evaluation is given in the figure \ref{cek-eval-closure}.
 
 \begin{figure}[!ht]
   \begin{center}
-    \begin{tabular}{|c c c c c c c|}
-      \hline
-      v & $*$ & $arg(c,~\pi)$ & $\succ$ & c & $*$ & $fun(v,~\pi)$ \\
-      v & $*$ & $fun(<~\lambda x.t;\xi~>,~\pi$ & $\succ$ &
-      $<~t;~(x~\mapsto~v)\cdot \xi~>$ 
-      & $*$ & $\pi$ \\
-      v & $*$ & $fun(<fix~x.t;~\xi>,~\pi>$ & $\succ$ &
-      $<t;~(x\mapsto <fix~x.t;~\xi>) \cdot \xi>$ & $*$ & $arg(v,~\pi)$ \\
-      $<0;~\xi'>$ & $*$ & $fork(t,~u,~\xi,~\pi)$ & $\succ$ &
-      $<t;~\xi>$ & $*$ & $\pi$ \\
-      $<n+1;~\xi'>$ & $*$ & $fork(t,~u,~\xi,~\pi)$ & $\succ$ &
-      $<u;~\xi>$ & $*$ & $\pi$ \\
-      $<n;~\xi>$ & $*$ & $s(\pi)$ & $\succ$ &
-      $<n+1;~\O>$ & $*$ & $\pi$ \\
-      $<n;~\xi>$ & $*$ & $p(\pi)$ & $\succ$ &
-      $<n-1;~\O>$ & $*$ & $\pi$ \\
-      \hline
-    \end{tabular}
+    \makebox[\textwidth]{
+      \begin{tabular}{|c c c c c c c|}
+        \hline
+        v & $*$ & $arg(c,~\pi)$ & $\succ$ & c & $*$ & $fun(v,~\pi)$ \\
+        v & $*$ & $fun(<~\lambda x.t;\xi~>,~\pi$ & $\succ$ &
+        $<~t;~(x~\mapsto~v)\cdot \xi~>$ 
+        & $*$ & $\pi$ \\
+        v & $*$ & $fun(<fix~x.t;~\xi>,~\pi>$ & $\succ$ &
+        $<t;~(x\mapsto <fix~x.t;~\xi>) \cdot \xi>$ & $*$ & $arg(v,~\pi)$ \\
+        $<0;~\xi'>$ & $*$ & $fork(t,~u,~\xi,~\pi)$ & $\succ$ &
+        $<t;~\xi>$ & $*$ & $\pi$ \\
+        $<n+1;~\xi'>$ & $*$ & $fork(t,~u,~\xi,~\pi)$ & $\succ$ &
+        $<u;~\xi>$ & $*$ & $\pi$ \\
+        $<n;~\xi>$ & $*$ & $s(\pi)$ & $\succ$ &
+        $<n+1;~\O>$ & $*$ & $\pi$ \\
+        $<n;~\xi>$ & $*$ & $p(\pi)$ & $\succ$ &
+        $<n-1;~\O>$ & $*$ & $\pi$ \\
+        \hline
+    \end{tabular}}
   \end{center}
   \caption{The CEK$_{PCF}$ closure evaluation rules}
   \label{cek-eval-closure}
