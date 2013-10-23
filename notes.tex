@@ -1,6 +1,7 @@
 \documentclass[a4paper,12pt]{article}
 
 \usepackage{amssymb}
+%% \usepackage{fullpage}
 \usepackage{bussproofs}
 \usepackage[utf8]{inputenc}
 %% \usepackage[english]{babel}
@@ -736,7 +737,13 @@ The PCF can be compiled, or evaluated, using the rules defined in the figure \re
 
 Linear and dependent types can be really powerful and give some informations
 that can be really useful, like the termination of a program or its
-computational cost.
+computational cost. This type theory remains on the linear logic, and especially
+on the bounded linear logic. where the typing derivation rules can be kind of
+complicated, it is powerful enough associated with PCF, in other word a simple
+typed $\lambda$-calculus. Such a language can then be compiled in a bytecode for
+CEK, a SECD-based abstract machine. 
+Linear dependent types are simply defined on natural integer, but what could be
+interesting would be to add them on other types, like floating point numbers.
 
 
 \bibliographystyle{plain}
