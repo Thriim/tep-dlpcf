@@ -158,7 +158,7 @@ First of all, let's consider a simple program written in PCF (whose syntax and
 semantics are recalled in Figures \ref{pcf-syntax} and \ref{pcf-sem}) :
 
 \begin{center} 
-  dbl = fix~f.$\lambda $x.~ifz~x~then~x~else~s(s(f(p(x)))) 
+  dbl = fix~f.$\lambda $x.~ifz~x~then~0~else~s(s(f(p(x)))) 
 \end{center}
 
 Simply, this function will return the double of its argument. In the PCF type
@@ -177,7 +177,7 @@ the function.
 \medskip
 
 Secondly, a linear dependent type system has the interesting property of
-being able to infer the complexity of a given function even it is
+being able to infer the complexity of a given function even if it is
 recursive. By infering the complexity of a function, the linear
 dependent type system is also capable of identifying the functions that
 diverge. Using the ideas from linear logic we could, for
@@ -187,7 +187,7 @@ example give the following type to dbl :
 $\vdash_{I}$ dbl : Nat $\rightarrow$ Nat
 \end{center}
 
-Where I is the cost to compute dbl. If I can be derived then 
+Where I is the cost to compute dbl. If I can be derived, then 
  the function doesn't diverge. For the dbl function where
 we replace the $p(x)$ by $x$ the type system would realize that the function
 doesn't terminate and will show a compilation error.
@@ -208,8 +208,8 @@ Means that $\sigma$ is substituted $n$ times during evaluation.
 
 \medskip
 
-Finally, a judgement in d$l$PCF would look this way, for a function from Nat to
-Nat :
+A full judgement for a function from Nat to
+Nat  in d$l$PCF would look this way:
 
 \begin{center}
 $\vdash_{g(a)}~t~:~!_{m}~Nat[a]~\multimap~Nat[f(a)]$ 
@@ -247,7 +247,7 @@ aggregate all the substitutions that are made as part of all the recursive calls
 from a function application. 
 
 The last element is called \emph{forest cardinality}. The forest
-cardinality is calculated by the method defined in the section 3.1 of \cite{ldtcv}, we won't
+cardinality is calculated by the method defined in the section 3.1 of \cite{ldtcbv}, we won't
 get into the details of how to calculate it but we're interested by its application to 
 linear dependent types. Basically for a given number of trees that describe the calls, including
 the recursive calls involved in the evaluation of a term, the forest cardinality allows to
@@ -275,7 +275,7 @@ is needed to express that on its evaluation a function may be
 substituted many times every time with a different value as an
 input. The first index corresponds to the lower bound and the second
 input to the greater bound of all the inputs the function will
-received. For example when evaluating the function $dbl$ to the
+receive. For example when evaluating the function $dbl$ to the
 argument n, the recursive function $f$ will be applied to all the
 values from $0$ to $n-1$. That means that the parameter of $f$ can be
 defined as $Nat[0,n-1]$.
@@ -284,12 +284,12 @@ In the modal types, d$l$PCF improves the notation given by BLL by changing the
 $!_{m}\sigma$ for $[a < m] \cdot \sigma$. That kind of typing still means that 
 the parameter will be used m times, but every time the argument is used
 the parameter $a$ will take a value in between 0 and $m-1$. The
-explanation of why this is useful will become more clear later
+explanation of why this is useful will become clearer later
 while studying how to type a recursive function with an example, but 
 for the moment we can say that this parameter is used in 
 the equational context $\varepsilon$ to define first order functions
 in the index terms. This allow to calculate the cost of a function and
-by being parametric, this definition of the type, has the advantage
+,by being parametric, this definition of the type has the advantage
 that it keeps the same skeleton for all types of $\sigma$.
 
 \subsection{Typing judgments}
@@ -300,13 +300,14 @@ We can now introduce the following form for typing judgments:
   $\phi; \Phi; \Gamma \vdash_{K}^{\varepsilon} t~:~\tau$
 \end{center}
 
-The argument $K$ is the weight of $t$, in other word the maximal number of
-substitution during its evaluation. $\Phi$ are the constraints envrionnement,
-for example $(a~<~I)$ from $[a~<~I] \cdot Nat$, called the index context, and
-$\Gamma$ is the typing context, associating a type to each free variable of $t$.
-Finally, $\phi$ is a bounder for free variables contained in the other context
-arguments.The sums and bounded sums can be applied over contexts. The derivation
-rules are presented in the figure \ref{deriv-rules}.
+The argument $K$ is the weight of $t$, in other word the maximal
+number of substitution during its evaluation. $\Phi$ contains the
+constraints of the environnement, for example $(a~<~I)$ from $[a~<~I]
+\cdot Nat$, called the index context, and $\Gamma$ is the typing
+context, associating a type to each free variable of $t$.  Finally,
+$\phi$ is a bounder for free variables contained in the other context
+arguments.The sums and bounded sums can be applied over contexts. The
+derivation rules are presented in the figure \ref{deriv-rules}.
 
 \begin{figure}
   \centering
@@ -601,10 +602,6 @@ a non-recursive evaluation of $t$.
   recursive function is substituted, in the case of $add~f~g$, it is
   $H=f~+~1$.
 
-
-\item \textbf{J} : is the number of copies of f. the first is not considered and
-the last recursive call doesn't use it.
-
 \end{itemize}
 
 Figure~\ref{definitionindexterms} represents the definitions of the index
@@ -616,11 +613,9 @@ terms for the add function.
   \begin{tabular}{l}
     $I~=~if~b~<~f~then~1~else~0$ \\
 
-    $J~=~f~-~b~-~1$ \\
+    $H~=~f~+~1$ \\
 
-    $H~=~f~-~b$ \\
-
-    $K~=~f~-~b~+~1$ \\
+    $K~=~1$ \\
   \end{tabular}
 \end{center}
 \caption{Equational context for add function}
@@ -629,11 +624,10 @@ terms for the add function.
 
 The meaning of all the index terms defined previously can be better
 understood by tracing the execution of a call to add. An example is
-given at figure \ref{exectrace}. 
+given at the following figure: 
 
 
-\begin{figure}
-\label{exectrace}
+\begin{figure}[ht]
 \begin{center}
 \begin{verbatim}
 add 3 4 = fix f succ (f pred 3 4)
@@ -642,16 +636,14 @@ add 3 4 = fix f succ (f pred 3 4)
             add 0 4 = fix f 0 
 \end{verbatim}
 \end{center}
-
+\label{exectrace}
 \caption{Execution trace of add 3 4}
 \end{figure}
 
 With the given formulas and the execution trace we can see how $I$ will always
 be 1 unless $b~\geq~f$, that is $I$ will be 0 when the first parameter to add is
 zero meaning that there will not be more recursive calls when the first
-parameter has been fully decomposed. $I$ represents the number of substitutions of
-the fixpoint function f
-
+parameter has been fully decomposed. 
 
 With the elements given by $\varepsilon$, calculating the cost of add
 reduces to solving the $H + \sum\limits_{b<H} (2) $, where 2
