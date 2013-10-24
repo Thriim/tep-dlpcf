@@ -85,7 +85,21 @@ $\sigma_{n}~\multimap~\tau$
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Compilation in an abstract machine}
 
+d$l$PCF can be compiled in a CEK abstract machine.
+
+\medskip
+
+CEK composition:
+\begin{itemize}
+\item A stack $\pi$.
+\item A closure $c~=~<t;~\varepsilon >$, with $t$ a term and $\varepsilon$ the
+  environment, to interact with the stack.
+\end{itemize}
+
+\end{frame}
 
 \end{document}
 
@@ -163,6 +177,16 @@ A simple example (3)
   
   cost = 4 + (2 * 4) = (f + 1) + 2 * (f + 1) 
 
+%Slide 6
 An abstract machine for PCF
 
+CEK : this abstract machine is really simple and specialized for lambda calculus
 
+There are 2 things to consider : the stack and the term to evaluate, with its
+actual environment. 
+
+It's kind of simple : for example, when evaluating an application, the closure
+is first push on the stack, and then, since only a value remains, the stakc is
+poped and the result is applied to the remaining value.
+
+CEK is used in particular with call-by-value lambda calculus
