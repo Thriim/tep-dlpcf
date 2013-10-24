@@ -48,7 +48,7 @@ madIdentity = fix f x =>
 \item Linear types \\
 \begin{figure}
 \begin{center}
-$\sigma~\multimap~\tau$
+$\sigma_{n}~\multimap~\tau$
 \end{center}
 \end{figure}
 \end{itemize}
@@ -66,6 +66,26 @@ $\sigma~\multimap~\tau$
 ($\varepsilon$) allows to infer a function's complexity and thus termination
 \end{itemize}
 \end{frame}
+
+\begin{frame}[fragile]
+\frametitle{A simple example}
+\begin{verbatim}
+  add: fix f y z => ifz y then 0 else (succ (f (pred y) z)
+\end{verbatim}
+\begin{itemize}
+\item Linear dependent type 
+
+  $Nat[a]~[c < 1]~\multimap~Nat[b]~[d < 1]~\multimap~Nat[a + b]$
+
+\item  How many substitutions will there be? 
+
+  Informally: substitutions = subst-of-recursive-function +
+  (subst-per-recursive-call * number-recursive-calls)
+
+\end{itemize}
+\end{frame}
+
+
 
 \end{document}
 
