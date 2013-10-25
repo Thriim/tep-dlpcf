@@ -85,6 +85,24 @@ $\sigma_{n}~\multimap~\tau$
 \end{itemize}
 \end{frame}
 
+\begin{frame}[fragile]
+\frametitle{A simple example (2)}
+
+\begin{verbatim}
+  add 3 4 = succ(add 2 4)
+  -> add 2 4 = succ(add 1 2)
+  -> -> add 1 4 = succ(add 0 4)
+  -> -> -> add 0 4 = 0
+\end{verbatim}
+\begin{itemize}
+\item I (how many recursive calls) = If b < f then 1 else 0
+\item subst-of-recursive-functon = <>0..f for b of I
+  % Epsilon will save us:  
+  %add is substituted 4 times (last time it's substituted even if its not
+  %called)
+\end{itemize}
+\end{frame}
+
 \begin{frame}
 \frametitle{Compilation in an abstract machine}
 
@@ -146,6 +164,7 @@ A simple example
   Informally: substitutions = subst-of-recursive-function +
   (subst-per-recursive-call * number-recursive-calls)
 
+% Slide 5
 A simple example (2)
 
   Epsilon will save us:  
