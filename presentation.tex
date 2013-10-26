@@ -7,6 +7,14 @@
 \usepackage[english]{babel}
 \usepackage{alltt}
 
+\usepackage{amssymb}
+%% \usepackage{fullpage}
+\usepackage{bussproofs}
+\usepackage[utf8]{inputenc}
+%% \usepackage[english]{babel}
+\usepackage{verbatim}
+\usepackage{mathabx}
+
 \usetheme{Warsaw}
 
 \title{Linear Dependent Types in a Call-by-Value scenario}
@@ -25,11 +33,11 @@
 
 
 \begin{verbatim}
-add = fix f y z. ifz y then 0 else (succ (f (pred y) z))
+add = fix f y z. ifz y then z else (succ (f (pred y) z))
 \end{verbatim}
 
 \begin{verbatim}
-divergef = fix f y z. ifz y then 0 else (succ (f y z))
+divergef = fix f y z. ifz y then z else (succ (f y z))
 \end{verbatim}
 Both have type Nat $\rightarrow$ Nat but one diverges and the other doesn't
 \end{frame}
@@ -82,25 +90,55 @@ Both have type Nat $\rightarrow$ Nat but one diverges and the other doesn't
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{A simple example}
+  \frametitle{A simple example - Informally}
 \begin{verbatim}
-  add = fix f y z. ifz y then 0 else (succ (f (pred y) z))
+  add = fix f y z. ifz y then z else (succ (f (pred y) z))
 \end{verbatim}
 \begin{itemize}
-\item Linear dependent type 
 
-  $ [c < 1] \cdot Nat[a] ~\multimap~[d < 1] \cdot (Nat[b]~\multimap~Nat[a + b])$
 
 \item  How many substitutions will there be? 
+  
+  if: $t = \lambda~y~z.ifz~y~then~z~else~(succ~(f~(pred~y)~z))$
 
-  Informally: substitutions = subst-of-recursive-function +
-  (subst-per-recursive-call * number-recursive-calls)
+\item substitutions(add) = recursive-calls + (recursive-calls * substitutions(t))
+
+  % There's "n" reductions for substituting the fixpoint operator
+  % + "n * substitutions(t)" reductions
 
 \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{A simple example (2)}
+  \frametitle{A simple example - Formally}
+
+  
+        \AxiomC{$(b,\phi); (b<H,\Phi); \Gamma, x :[a < I] \cdot A \vdash_{J}^{\varepsilon}$
+        $ t : [a<1]\cdot B$}
+        \noLine
+        \UnaryInfC{$\phi; \Phi \models_{\varepsilon}$ 
+          $H \ge \otriangleup_{b}^{0, K} I$}
+        \noLine
+        \UnaryInfC{$(a,b,\phi); (a < I,b < H, \Phi) \vdash_{\varepsilon}$ 
+          $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I + b + 1 + 1/b\} \sqsubseteq A $}
+        \noLine
+        \UnaryInfC{$(a,\phi); (a < K, \Phi) \vdash_{\varepsilon}$ 
+          $B\{0/a\}\{\otriangleup_{b}^{b+1,a}I/b\} \sqsubseteq C $}
+        \noLine
+        \UnaryInfC{$\phi; \Phi \vdash_{\varepsilon}$ 
+          $\Sigma \sqsubseteq \sum_{b<H} \Gamma$}
+
+        \RightLabel{(Rec)}
+        \UnaryInfC{$\phi; \Phi; \Sigma \vdash^{\varepsilon}_{H+\sum_{b<H}J}$
+          $fix~x.t~:~[a<K]~C$}
+        \DisplayProof 
+
+  % Explain only H+\sum_{b<H}J and why it cannot be as simple as H + J * H
+
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{A simple example - Execution }
 
 \begin{verbatim}
   add 3 4 = succ(add 2 4)
@@ -108,13 +146,7 @@ Both have type Nat $\rightarrow$ Nat but one diverges and the other doesn't
   -> -> add 1 4 = succ(add 0 4)
   -> -> -> add 0 4 = 0
 \end{verbatim}
-\begin{itemize}
-\item I (how many recursive calls) = If b < f then 1 else 0
-\item subst-of-recursive-functon = <>0..f for b of I
-  % Epsilon will save us:  
-  %add is substituted 4 times (last time it's substituted even if its not
-  %called)
-\end{itemize}
+  % Explain formula with the help of the trace
 \end{frame}
 
 \begin{frame}
