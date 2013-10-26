@@ -5,6 +5,7 @@
 \usepackage{lmodern}
 \usepackage{graphicx}
 \usepackage[english]{babel}
+\usepackage{alltt}
 
 \usetheme{Warsaw}
 
@@ -24,67 +25,71 @@
 
 
 \begin{verbatim}
-add = fix f y z => ifz y then 0 else (succ (f (pred y) z)
+add = fix f y z. ifz y then 0 else (succ (f (pred y) z))
 \end{verbatim}
 
 \begin{verbatim}
-divergef = fix f y z => ifz y then 0 else (succ (f y z))
+divergef = fix f y z. ifz y then 0 else (succ (f y z))
 \end{verbatim}
-Both have type Nat -> Nat but one diverges and the other doesn't
+Both have type Nat $\rightarrow$ Nat but one diverges and the other doesn't
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Classical type systems don't inform about complexity}
-Which one is best? 
-\begin{verbatim}
- identity = x => x 
-\end{verbatim}
-\begin{verbatim}
-madIdentity = fix f x => 
-                ifz x then 0 else (succ (f (pred x))
-\end{verbatim}
+  \frametitle{Classical type systems don't inform about complexity}
+  Which one is best? 
+  \begin{alltt}
+    identity = \(\lambda\)x. x 
+  \end{alltt}
+  \begin{alltt}
+    madIdentity = fix f x. 
+                    ifz x then 0 else (succ (f (pred x))
+  \end{alltt}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Two improvements}
-\begin{itemize}
-\item Dependent types
-\begin{figure}
-\begin{verbatim}
- add : Nat[a] => Nat[b] => Nat[a+b]
-\end{verbatim}
-\end{figure}
-\item Linear types \\
-\begin{figure}
-\begin{center}
-$\sigma_{n}~\multimap~\tau$
-\end{center}
-\end{figure}
-\end{itemize}
+  \frametitle{Two improvements}
+  \begin{itemize}
+  \item Dependent types
+    \begin{figure}
+\begin{alltt}
+ add : Nat[a] \(\rightarrow\) Nat[b] \(\rightarrow\) Nat[a+b]
+\end{alltt}
+    \end{figure}
+  \item Linear types \\
+    \begin{figure}
+      \begin{center}
+        $!_{n} \sigma ~\multimap~\tau$
+      \end{center}
+    \end{figure}
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Putting them together}
-\begin{itemize}
-\item Dependent types provide information about the function's inputs and outputs
+  \frametitle{Putting them together}
+  \begin{itemize}
+  \item Dependent types provide information about the function's inputs and outputs
 
-\item Linear types provide information about how many times a parameter is
-  copied or a function is used (substitution)
+  \item Linear types provide information about how many times a parameter is
+    copied or a function is used (substitution)
 
-\item Taking the information from both + giving an extra context
-($\varepsilon$) allows to infer a function's complexity and thus termination
-\end{itemize}
+  \item Taking the information from both + giving an extra context
+    ($\varepsilon$) allows to infer a function's complexity and thus termination
+  \end{itemize}
+
+  \medskip
+
+  The result gives \textbf{d$l$PCF}.
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{A simple example}
+  \frametitle{A simple example}
 \begin{verbatim}
-  add: fix f y z => ifz y then 0 else (succ (f (pred y) z)
+  add = fix f y z. ifz y then 0 else (succ (f (pred y) z))
 \end{verbatim}
 \begin{itemize}
 \item Linear dependent type 
 
-  $Nat[a]~[c < 1]~\multimap~Nat[b]~[d < 1]~\multimap~Nat[a + b]$
+  $ [c < 1] \cdot Nat[a] ~\multimap~[d < 1] \cdot (Nat[b]~\multimap~Nat[a + b])$
 
 \item  How many substitutions will there be? 
 
@@ -95,7 +100,7 @@ $\sigma_{n}~\multimap~\tau$
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{A simple example (2)}
+  \frametitle{A simple example (2)}
 
 \begin{verbatim}
   add 3 4 = succ(add 2 4)
@@ -113,18 +118,18 @@ $\sigma_{n}~\multimap~\tau$
 \end{frame}
 
 \begin{frame}
-\frametitle{Compilation in an abstract machine}
+  \frametitle{Compilation in an abstract machine}
 
-d$l$PCF can be compiled in a CEK abstract machine.
+  d$l$PCF can be compiled in a CEK abstract machine.
 
-\medskip
+  \medskip
 
-CEK composition:
-\begin{itemize}
-\item A stack $\pi$.
-\item A closure $c~=~<t;~\varepsilon >$, with $t$ a term and $\varepsilon$ the
-  environment, to interact with the stack.
-\end{itemize}
+  CEK composition:
+  \begin{itemize}
+  \item A stack $\pi$.
+  \item A closure $c~=~<t;~\varepsilon >$, with $t$ a term and $\varepsilon$ the
+    environment, to interact with the stack.
+  \end{itemize}
 
 \end{frame}
 
